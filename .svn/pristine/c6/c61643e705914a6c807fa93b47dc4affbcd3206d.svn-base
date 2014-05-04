@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+	    android:orientation="vertical"
+	    android:id="@+id/rl_bottom"
+	    android:background="@drawable/order_bottom_bg"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    style="@style/Widget.Header">
+        <LinearLayout
+	        android:gravity="left"
+	        android:orientation="vertical"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_toLeftOf="@+id/btn_submit"
+	        android:layout_alignParentLeft="true"
+	        android:layout_centerVertical="true">
+            <TextView
+	            android:textSize="@dimen/text_size_medium"
+	            android:textColor="#ffee600a"
+	            android:id="@+id/tv_count"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            style="@style/TextAppearance.Huge" />
+            <TextView
+	            android:id="@+id/tv_count_descrption"
+	            android:visibility="gone"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            style="@style/TextAppearance.Small" />
+        </LinearLayout>
+        <Button
+	        android:id="@+id/btn_submit"
+	        android:paddingLeft="27.0dip"
+	        android:paddingRight="27.0dip"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/order_submit_button_submit"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        style="@style/Widget.Button.Main.Shop" />
+    </RelativeLayout>
+    <LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@id/rl_bottom"
+	    android:orientation="vertical"
+	    android:layout_alignParentTop="true">
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical"
+	        android:id="@+id/ll_order_confirm_containter">
+		    <LinearLayout
+			    android:background="@drawable/order_view_header"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content" />
+		    <RelativeLayout
+			    android:id="@+id/rl_use_coupon"
+			    android:background="@drawable/order_view_body"
+			    android:padding="15.0dip"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    style="@style/Widget.Item.ListView.SingleLine">
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:text="@string/coupon_use_title"
+			        android:layout_toLeftOf="@+id/iv_arrow_right"
+			        android:layout_alignParentLeft="true" />
+		        <ImageView
+			        android:id="@+id/iv_arrow_right"
+			        android:focusable="false"
+			        android:clickable="false"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:src="@drawable/btn_next"
+			        android:scaleType="centerInside"
+			        android:layout_alignParentRight="true"
+			        android:layout_centerVertical="true" />
+		    </RelativeLayout>
+		    <RelativeLayout
+			    android:id="@+id/rl_product_money_container"
+			    android:background="@drawable/order_view_body"
+			    android:layout_width="fill_parent"
+			    android:layout_height="@dimen/list_item_height_single_line">
+		        <include
+			        android:id="@+id/in_top_line"
+			        android:layout_marginTop="0.0dip"
+			        android:layout_alignParentTop="true"
+			        layout="@layout/horizontal_divider" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_product_money_title"
+			        android:layout_width="85.0dip"
+			        android:layout_height="wrap_content"
+			        android:text="@string/order_submit_product_money"
+			        android:layout_alignParentLeft="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <LinearLayout
+			        android:id="@+id/ll_vertical_bar_1"
+			        android:background="@android:drawable/divider_horizontal_bright"
+			        android:layout_width="1.0dip"
+			        android:layout_height="fill_parent"
+			        android:layout_marginLeft="15.0dip"
+			        android:orientation="horizontal"
+			        android:layout_toRightOf="@id/tv_product_money_title" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="15.0dip"
+			        android:text="@string/order_list_rmb"
+			        android:layout_toRightOf="@id/ll_vertical_bar_1"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_product_money"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginRight="15.0dip"
+			        android:layout_alignParentRight="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		    </RelativeLayout>
+		    <RelativeLayout
+			    android:id="@+id/rl_shipment_container"
+			    android:background="@drawable/order_view_body"
+			    android:visibility="gone"
+			    android:layout_width="fill_parent"
+			    android:layout_height="@dimen/list_item_height_single_line">
+		        <include
+			        android:id="@+id/in_top_line"
+			        android:layout_marginTop="0.0dip"
+			        android:layout_alignParentTop="true"
+			        layout="@layout/horizontal_divider" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_shipment_title"
+			        android:layout_width="85.0dip"
+			        android:layout_height="wrap_content"
+			        android:text="@string/order_submit_shipment"
+			        android:layout_alignParentLeft="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_shipment"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginRight="15.0dip"
+			        android:layout_alignParentRight="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <LinearLayout
+			        android:id="@+id/ll_vertical_bar_2"
+			        android:background="@android:drawable/divider_horizontal_bright"
+			        android:layout_width="1.0dip"
+			        android:layout_height="fill_parent"
+			        android:layout_marginLeft="15.0dip"
+			        android:orientation="horizontal"
+			        android:layout_toRightOf="@id/tv_shipment_title" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="15.0dip"
+			        android:text="@string/order_list_rmb"
+			        android:layout_toRightOf="@id/ll_vertical_bar_2"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		    </RelativeLayout>
+		    <RelativeLayout
+			    android:id="@+id/rl_coupon_discount_container"
+			    android:background="@drawable/order_view_body"
+			    android:visibility="gone"
+			    android:layout_width="fill_parent"
+			    android:layout_height="@dimen/list_item_height_single_line">
+		        <include
+			        android:id="@+id/in_top_line"
+			        android:layout_marginTop="0.0dip"
+			        android:layout_alignParentTop="true"
+			        layout="@layout/horizontal_divider" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_coupon_discount_title"
+			        android:layout_width="85.0dip"
+			        android:layout_height="wrap_content"
+			        android:text="@string/order_submit_coupon_discount"
+			        android:layout_alignParentLeft="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_coupon_discount"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginRight="15.0dip"
+			        android:layout_alignParentRight="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <LinearLayout
+			        android:id="@+id/ll_vertical_bar_3"
+			        android:background="@android:drawable/divider_horizontal_bright"
+			        android:layout_width="1.0dip"
+			        android:layout_height="fill_parent"
+			        android:layout_marginLeft="15.0dip"
+			        android:orientation="horizontal"
+			        android:layout_toRightOf="@id/tv_coupon_discount_title" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="15.0dip"
+			        android:text="@string/order_list_rmb"
+			        android:layout_toRightOf="@id/ll_vertical_bar_3"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		    </RelativeLayout>
+		    <RelativeLayout
+			    android:id="@+id/rl_activity_discount_container"
+			    android:background="@drawable/order_view_body"
+			    android:visibility="gone"
+			    android:layout_width="fill_parent"
+			    android:layout_height="@dimen/list_item_height_single_line">
+		        <include
+			        android:id="@+id/in_top_line"
+			        android:layout_marginTop="0.0dip"
+			        android:layout_alignParentTop="true"
+			        layout="@layout/horizontal_divider" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_activity_discount_title"
+			        android:layout_width="85.0dip"
+			        android:layout_height="wrap_content"
+			        android:text="@string/order_submit_activity_discount"
+			        android:layout_alignParentLeft="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:gravity="right"
+			        android:id="@+id/tv_activity_discount"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginRight="15.0dip"
+			        android:layout_alignParentRight="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <LinearLayout
+			        android:id="@+id/ll_vertical_bar_4"
+			        android:background="@android:drawable/divider_horizontal_bright"
+			        android:layout_width="1.0dip"
+			        android:layout_height="fill_parent"
+			        android:layout_marginLeft="15.0dip"
+			        android:orientation="horizontal"
+			        android:layout_toRightOf="@id/tv_activity_discount_title" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="15.0dip"
+			        android:text="@string/order_list_rmb"
+			        android:layout_toRightOf="@id/ll_vertical_bar_4"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		    </RelativeLayout>
+		    <RelativeLayout
+			    android:id="@+id/rl_amount_container"
+			    android:background="@drawable/order_view_body"
+			    android:layout_width="fill_parent"
+			    android:layout_height="@dimen/list_item_height_single_line">
+		        <include
+			        android:id="@+id/in_top_line"
+			        android:layout_marginTop="0.0dip"
+			        android:layout_alignParentTop="true"
+			        layout="@layout/horizontal_divider" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:textColor="@color/highlight_text_color"
+			        android:gravity="right"
+			        android:id="@+id/tv_amount_title"
+			        android:layout_width="85.0dip"
+			        android:layout_height="wrap_content"
+			        android:text="@string/order_submit_amount_title"
+			        android:layout_alignParentLeft="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:textColor="@color/highlight_text_color"
+			        android:gravity="right"
+			        android:id="@+id/tv_amount"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginRight="15.0dip"
+			        android:layout_alignParentRight="true"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		        <LinearLayout
+			        android:id="@+id/ll_vertical_bar_5"
+			        android:background="@android:drawable/divider_horizontal_bright"
+			        android:layout_width="1.0dip"
+			        android:layout_height="fill_parent"
+			        android:layout_marginLeft="15.0dip"
+			        android:orientation="horizontal"
+			        android:layout_toRightOf="@id/tv_amount_title" />
+		        <TextView
+			        android:textSize="@dimen/text_size_medium"
+			        android:textColor="@color/highlight_text_color"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="15.0dip"
+			        android:text="@string/order_list_rmb"
+			        android:layout_toRightOf="@id/ll_vertical_bar_5"
+			        android:layout_centerVertical="true"
+			        style="@style/TextAppearance.List.Secondary" />
+		    </RelativeLayout>
+		    <LinearLayout
+			    android:background="@drawable/order_view_footer"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content" />
+		</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,646 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.ShoppingActivity;
+import cn.digione.yibaic.shop.bean.CheckoutFormInfo;
+import cn.digione.yibaic.shop.util.Log;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 14-3-12 Time: 下午5:52
+ */
+public class CheckoutFragment extends BaseFragment implements RadioGroup.OnCheckedChangeListener {
+
+	private RelativeLayout mAddress;
+	private TextView mAddressBottom;
+	private String mAddressId;
+	private TextView mAddressMiddle;
+	private TextView mAddressUp;
+	private RelativeLayout mCheckoutAddressEmpty;
+	private TextView mCheckoutHint;
+	private LinearLayout mCheckoutHintContainer;
+	private LinearLayout mCheckoutInfoContainer;
+	private ScrollView mContainer;
+	private RadioGroup mDelivertimeGroup;
+	private HashMap mFormDefaultValue;
+	private RadioGroup mInvoiceGroup;
+	private RadioButton mInvoiceRadioButton;
+	private EditText mInvoiceTitle;
+	private LinearLayout mInvoiceTitleBg;
+	private boolean mIsShopping;
+	private boolean mIsPersonalInvoice;
+	private EditText mBuyAddr;
+	private EditText mBuyConsignee;
+	private String mBuyId;
+	private EditText mBuyTel;
+	private TextView mNext;
+	private RadioGroup mPaymentGroup;
+	private String mRegionId;
+	private RadioGroup mShipmentGroup;
+	private View mView;
+	private CheckoutFormInfo mFormInfo;
+	private static final String mRowTitles[] = { "paylist", "delivertime", "invoice" };
+	private static CheckoutFragment newFragment = null;
+	private static final int TAG_CHECKOUT_PAY_ID = 101;
+	private static final int TAG_CHECKOUT_PICKUP_ID = 102;
+	private static final int TAG_CHECKOUT_SHIPMENT_ID = 103;
+
+	class RadioButtonInfo {
+		public void addTag(int i, String s) {
+			Tag tag = new Tag();
+			tag.key = i;
+			tag.value = s;
+			mTags.add(tag);
+		}
+
+		public String mTag;
+		public ArrayList<Tag> mTags = new ArrayList();
+		public String mTitle;
+
+		class Tag {
+			public int key;
+			public String value;
+		}
+	}
+
+	private static class UIHandler extends Handler {
+
+		private final WeakReference mFragment;
+
+		public void handleMessage(Message message) {
+			if (message.what == 1) {
+				CheckoutFragment checkoutfragment = (CheckoutFragment) mFragment.get();
+				if (checkoutfragment != null) {
+					checkoutfragment.getActivity().onBackPressed();
+				}
+			}
+		}
+
+		public UIHandler(CheckoutFragment checkoutfragment) {
+			mFragment = new WeakReference(checkoutfragment);
+		}
+	}
+
+	/*
+	 * public static CheckoutFragment newInstance(String s) { newFragment = new CheckoutFragment(); Bundle bundle = new
+	 * Bundle(); bundle.putString("extraParam", s); newFragment.setArguments(bundle); return newFragment; }
+	 */
+
+	private void addRadioButtons(RadioGroup radiogroup, ArrayList arraylist, String s) {
+		RadioButton radiobutton = null;
+		String s1;
+		int len = arraylist.size();
+		if (arraylist != null && arraylist.size() > 0) {
+			for (int i = 0; i < len; i++) {
+				RadioButtonInfo radiobuttoninfo = (RadioButtonInfo) arraylist.get(i);
+				radiobutton = new RadioButton(getActivity());
+				radiobutton.setText(radiobuttoninfo.mTitle);
+				if (radiobuttoninfo.mTags.size() == 0) {
+					radiobutton.setTag(radiobuttoninfo.mTag);
+				} else {
+					int tagIndex = 0;
+					while (tagIndex < radiobuttoninfo.mTags.size()) {
+						RadioButtonInfo.Tag tag = (RadioButtonInfo.Tag) radiobuttoninfo.mTags.get(tagIndex);
+						radiobutton.setTag(tag.key, tag.value);
+						tagIndex++;
+					}
+				}
+				radiogroup.addView(radiobutton);
+
+				if (len == 1) {
+					radiobutton.setBackgroundResource(R.drawable.radiobutton_single_bg);
+				} else if (i == 0) {
+					radiobutton.setBackgroundResource(R.drawable.radiobutton_up_bg);
+				} else if (i == i - 1) {
+					radiobutton.setBackgroundResource(R.drawable.radiobutton_bottom_bg);
+				} else {
+					radiobutton.setBackgroundResource(R.drawable.radiobutton_middle_bg);
+				}
+
+				radiobutton.setButtonDrawable(new ColorDrawable(0));
+				radiobutton.setLayoutParams(new android.widget.RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+						ViewGroup.LayoutParams.WRAP_CONTENT));
+
+				if (radiogroup == mPaymentGroup) {
+					Object aobj[] = new Object[2];
+					aobj[0] = radiobutton.getTag(TAG_CHECKOUT_PAY_ID);
+					aobj[1] = radiobutton.getTag(TAG_CHECKOUT_PICKUP_ID);
+					s1 = String.format("%1$s_%2$s", aobj);
+				} else if (radiogroup == mShipmentGroup) {
+					s1 = radiobutton.getTag(TAG_CHECKOUT_SHIPMENT_ID).toString();
+				} else {
+					s1 = radiobutton.getTag().toString();
+				}
+
+				radiobutton.setChecked(true);
+				if (TextUtils.equals(s1, s)) {
+					radiobutton.setChecked(true);
+				}
+			}
+		}
+	}
+
+	private void displayInvoiceTitle(boolean flag) {
+		int i;
+		if (flag) {
+			i = View.VISIBLE;
+			showInput(true);
+		} else {
+			i = View.GONE;
+			showInput(false);
+		}
+		mInvoiceTitleBg.setVisibility(i);
+	}
+
+	private String getDefaultValue(int i) {
+		String s = (String) mFormDefaultValue.get(Integer.valueOf(i));
+		Log.d("CheckoutFragment getDefaultValue: key is " + i + ", value is " + s);
+		return s;
+	}
+
+	public ShoppingActivity getParent() {
+		return (ShoppingActivity) getActivity();
+	}
+
+	private boolean getFormData() {
+		if (mFormInfo == null) {
+			mFormInfo = new CheckoutFormInfo();
+		}
+		String addressId = mView.findViewById(R.id.rl_checkout_address).getTag().toString();
+		if (TextUtils.equals(addressId, "0")) {
+			ToastUtil.show(getActivity(), R.string.checkout_form_address_empty);
+			return false;
+		}
+		mFormInfo.setAddressId(addressId);
+		int invoiceCheckedRadioId = mInvoiceGroup.getCheckedRadioButtonId();
+		String invoiceType = ((RadioButton) mInvoiceGroup.findViewById(invoiceCheckedRadioId)).getTag().toString();
+		mFormInfo.setInvoiceType(invoiceType);
+		String invoiceTitle;
+		if (invoiceType.equals("2")) {
+			if (TextUtils.isEmpty(mInvoiceTitle.getText().toString())) {
+				ToastUtil.show(getActivity(), R.string.checkout_form_invoice_title_input_pleases);
+				return false;
+			}
+			invoiceTitle = mInvoiceTitle.getText().toString();
+			mFormInfo.setInvoiceTitle(invoiceTitle);
+		} else {
+			invoiceTitle = "";
+			mFormInfo.setInvoiceTitle(invoiceTitle);
+		}
+
+		RadioButton radiobutton = null;
+		setDefaultValue(5, invoiceTitle);
+		int paymentCheckedRadioId = mPaymentGroup.getCheckedRadioButtonId();
+		radiobutton = (RadioButton) mPaymentGroup.findViewById(paymentCheckedRadioId);
+		String payId = radiobutton.getTag(TAG_CHECKOUT_PAY_ID).toString();
+		String pickupId = radiobutton.getTag(TAG_CHECKOUT_PICKUP_ID).toString();
+		mFormInfo.setPayId(payId);
+		mFormInfo.setPickupId(pickupId);
+		int shipmentCheckedRadioId = mShipmentGroup.getCheckedRadioButtonId();
+		String shipmentId = ((RadioButton) mShipmentGroup.findViewById(shipmentCheckedRadioId)).getTag(
+				TAG_CHECKOUT_SHIPMENT_ID).toString();
+		if (shipmentId != null) {
+			mFormInfo.setShipmentId(shipmentId);
+		}
+
+		int delivertimeCheckedRadioId = mDelivertimeGroup.getCheckedRadioButtonId();
+		radiobutton = (RadioButton) mDelivertimeGroup.findViewById(delivertimeCheckedRadioId);
+		mFormInfo.setBestTimeId(radiobutton.getTag().toString());
+		mFormInfo.setBuyConsignee(mBuyConsignee.getText().toString());
+		mFormInfo.setBuyTel(mBuyTel.getText().toString());
+		mFormInfo.setBuyId(mBuyId);
+		return true;
+	}
+
+	private void onNext() {
+
+		/*
+		 * OrderSubmitFragment orderSubmitFragment = new OrderSubmitFragment();
+		 * 
+		 * FragmentManager fragmentManager = getFragmentManager(); FragmentTransaction transaction =
+		 * fragmentManager.beginTransaction(); transaction.replace(R.id.ll_shopping_cart_fragment_container,
+		 * orderSubmitFragment, "order_submit_fragment"); transaction.addToBackStack("order_submit_fragment");
+		 * transaction.commit();
+		 */
+		Bundle bundle = new Bundle();
+		getParent().showFragment("order_submit_fragment", bundle, true);
+
+		/*
+		 * if (!getFormData()) { return; } JSONObject jsonobject = new JSONObject(); ShoppingActivity shoppingactivity;
+		 * Bundle bundle; Fragment fragment; try { jsonobject.put("address_id", mFormInfo.getAddressId());
+		 * jsonobject.put("pay_id", mFormInfo.getPayId()); jsonobject.put("pickup_id", mFormInfo.getPickupId());
+		 * jsonobject.put("shipment_id", mFormInfo.getShipmentId()); jsonobject.put("best_time", mFormInfo.getBestTimeId());
+		 * jsonobject.put("invoice_type", mFormInfo.getInvoiceType()); jsonobject.put("invoice_title",
+		 * mFormInfo.getInvoiceTitle()); jsonobject.put("coupon_type", mFormInfo.getCouponType());
+		 * jsonobject.put("coupon_code", mFormInfo.getCouponCode()); jsonobject.put("client__id", mFormInfo.getBuyId());
+		 * JSONObject jsonobject1 = new JSONObject(); jsonobject1.put("consignee", mFormInfo.getBuyConsignee());
+		 * jsonobject1.put("tel", mFormInfo.getBuyTel()); jsonobject.put("extend_field", jsonobject1); shoppingactivity =
+		 * (ShoppingActivity) getActivity(); bundle = new Bundle(); bundle.putString("com.xiaomi.shop.extra_submit_json",
+		 * jsonobject.toString()); fragment = ((BaseActivity) getActivity()).getFragmentByTag("order_submit_fragment"); }
+		 * catch (JSONException jsonexception) { Toast.makeText(getActivity(), getString(2131361852), 0).show();
+		 * jsonexception.printStackTrace(); return; }
+		 */
+	}
+
+	private void openAddressActivity(String s) {
+		Intent intent = null;// new Intent(getActivity(), AddressActivity);
+		intent.setAction("com.xiaomi.shop.use_address");
+		intent.putExtra("com.xiaomi.shop.extra_address_id", s);
+		startActivityForResult(intent, 1);
+	}
+
+	private void removeFormData() {
+		mAddress.setTag("");
+		mAddressUp.setText("");
+		mAddressMiddle.setText("");
+		mAddressBottom.setText("");
+		mPaymentGroup.removeAllViews();
+		mShipmentGroup.removeAllViews();
+		mInvoiceGroup.removeAllViews();
+		mDelivertimeGroup.removeAllViews();
+	}
+
+	private void setDefaultValue(int i, String s) {
+		Log.d("CheckoutFragment SetDefaultValue: key is " + i + ", value is " + s);
+		mFormDefaultValue.put(Integer.valueOf(i), s);
+	}
+
+	private void setDelivertime(JSONArray jsonarray) throws JSONException {
+		RadioGroup radiogroup = mDelivertimeGroup;
+		ArrayList arraylist = new ArrayList();
+		for (int i = 0; i < jsonarray.length(); i++) {
+			RadioButtonInfo radiobuttoninfo = new RadioButtonInfo();
+			JSONObject jsonobject = jsonarray.optJSONObject(i);
+			radiobuttoninfo.mTitle = jsonobject.optString("desc");
+			radiobuttoninfo.mTag = jsonobject.optString("value");
+			arraylist.add(radiobuttoninfo);
+		}
+
+		addRadioButtons(radiogroup, arraylist, getDefaultValue(3));
+	}
+
+	private void setFormData(JSONObject jsonobject) {
+		try {
+			JSONObject jsonobject1 = jsonobject.getJSONObject("data");
+			JSONObject jsonobject2 = jsonobject1.optJSONObject("address");
+			String s = null;
+			String s1 = null;
+			JSONArray jsonarray = null;
+			if (jsonobject2 != null) {
+				if (jsonobject2 != null && jsonobject2.length() != 0) {
+					mAddressId = jsonobject2.optString("address_id");
+					mAddress.setTag(mAddressId);
+					String tel = jsonobject2.optString("tel");
+					Resources resources = getResources();
+					String aobj[] = new String[2];
+					aobj[0] = jsonobject2.optString("consignee");
+					aobj[1] = Utils.PhoneFormat.valueOf(tel);
+					mAddressBottom.setText(resources.getString(R.string.address_title, aobj));
+					mBuyConsignee.setText(jsonobject2.optString("consignee"));
+					mBuyTel.setText(tel);
+					String aobj1[] = new String[3];
+					aobj1[0] = jsonobject2.optJSONObject("province").optString("name");
+					aobj1[1] = jsonobject2.optJSONObject("city").optString("name");
+					aobj1[2] = jsonobject2.optJSONObject("district").optString("name");
+					mAddressUp.setText(resources.getString(R.string.address_area, aobj1));
+					mRegionId = jsonobject2.optJSONObject("district").optString("id");
+					String aobj2[] = new String[2];
+					aobj2[0] = jsonobject2.optString("address");
+					aobj2[1] = jsonobject2.optString("zipcode");
+					mAddressMiddle.setText(resources.getString(R.string.address_location, aobj2));
+				}
+
+				mCheckoutAddressEmpty.setVisibility(View.GONE);
+				mAddress.setVisibility(View.VISIBLE);
+
+				if (mIsShopping) {
+					JSONObject jsonobject3 = jsonobject1.optJSONObject("mihome");
+					mBuyAddr.setText(jsonobject3.optString("name"));
+					mCheckoutAddressEmpty.setVisibility(View.GONE);
+					mAddress.setVisibility(View.VISIBLE);
+				}
+
+				mIsPersonalInvoice = jsonobject1.optBoolean("invoice_open", false);
+				if (mRowTitles.length > 0) {
+					for (int i = 0; i < mRowTitles.length; i++) {
+						s1 = mRowTitles[i];
+						jsonarray = jsonobject1.optJSONArray(s1);
+						if (jsonarray != null && jsonarray.length() != 0) {
+							setFormRow(s1, jsonarray);
+							i++;
+						}
+					}
+				} else {
+					mInvoiceTitle.setText(getDefaultValue(5));
+					s = jsonobject1.optString("tip");
+					if (TextUtils.isEmpty(s)) {
+						mCheckoutHintContainer.setVisibility(View.GONE);
+						return;
+					}
+				}
+
+			} else {
+				mInvoiceTitle.setText(getDefaultValue(5));
+				s = jsonobject1.optString("tip");
+				if (TextUtils.isEmpty(s)) {
+					mCheckoutHintContainer.setVisibility(View.GONE);
+					return;
+				}
+			}
+
+		} catch (JSONException jsonexception) {
+			ToastUtil.show(getActivity(), getString(R.string.checkout_set_form_data_exception));
+			jsonexception.printStackTrace();
+			return;
+		}
+
+	}
+
+	private void setFormRow(String s, JSONArray jsonarray) {
+		try {
+			if (s.equals("paylist")) {
+				setPayment(jsonarray);
+			}
+			if (s.equals("delivertime")) {
+				setDelivertime(jsonarray);
+			}
+			if (s.equals("invoice")) {
+				setInvoice(jsonarray);
+			}
+		} catch (JSONException jsonexception) {
+			jsonexception.printStackTrace();
+		}
+
+	}
+
+	private void setInvoice(JSONArray jsonarray) throws JSONException {
+		RadioGroup radiogroup = mInvoiceGroup;
+		ArrayList arraylist = new ArrayList();
+		RadioButtonInfo radiobuttoninfo = new RadioButtonInfo();
+		radiobuttoninfo.mTitle = getString(R.string.checkout_no_invoice);
+		radiobuttoninfo.mTag = "0";
+		arraylist.add(radiobuttoninfo);
+		for (int i = 0; i < jsonarray.length(); i++) {
+			RadioButtonInfo radiobuttoninfo1 = new RadioButtonInfo();
+			JSONObject jsonobject = jsonarray.getJSONObject(i);
+			radiobuttoninfo1.mTitle = jsonobject.optString("desc");
+			radiobuttoninfo1.mTag = jsonobject.optString("value");
+			arraylist.add(radiobuttoninfo1);
+		}
+
+		if (mIsPersonalInvoice) {
+			setDefaultValue(4, "1");
+		}
+		addRadioButtons(radiogroup, arraylist, getDefaultValue(4));
+		mInvoiceTitle.setText(getDefaultValue(5));
+	}
+
+	private void setPayment(JSONArray jsonarray) throws JSONException {
+		RadioGroup radiogroup = mPaymentGroup;
+		ArrayList arraylist = new ArrayList();
+		boolean flag = false;
+		String s = getDefaultValue(1);
+		String s1 = null;
+		for (int i = 0; i < jsonarray.length(); i++) {
+			JSONObject jsonobject = jsonarray.getJSONObject(i);
+			String payId = jsonobject.optString("pay_id");
+			String brief = jsonobject.optString("brief");
+			if (TextUtils.equals(payId, "6")) {
+				JSONArray jsonarray1 = jsonobject.getJSONArray("list");
+				int j = 0;
+				while (j < jsonarray1.length()) {
+					JSONObject jsonobject1 = jsonarray1.getJSONObject(j);
+					RadioButtonInfo radiobuttoninfo1 = new RadioButtonInfo();
+					Object aobj[] = new Object[3];
+					aobj[0] = brief;
+					aobj[1] = jsonobject1.optString("name");
+					aobj[2] = jsonobject1.optString("address");
+					radiobuttoninfo1.mTitle = String.format("%s\n%s\n%s", aobj);
+					String homeId = jsonobject1.optString("home_id");
+					radiobuttoninfo1.addTag(TAG_CHECKOUT_PAY_ID, payId);
+					radiobuttoninfo1.addTag(TAG_CHECKOUT_PICKUP_ID, homeId);
+					arraylist.add(radiobuttoninfo1);
+					String s6 = String.format("%1$s_%2$s", new Object[] { payId, homeId });
+					if (!flag && s != null && s.equals(s6)) {
+						flag = true;
+					}
+					if (jsonobject.optBoolean("checked")) {
+						s1 = s6;
+					}
+					j++;
+				}
+			}
+			RadioButtonInfo radiobuttoninfo = new RadioButtonInfo();
+			radiobuttoninfo.mTitle = brief;
+			radiobuttoninfo.addTag(TAG_CHECKOUT_PAY_ID, payId);
+			radiobuttoninfo.addTag(TAG_CHECKOUT_PICKUP_ID, "0");
+			arraylist.add(radiobuttoninfo);
+			String s4 = String.format("%1$s_%2$s", new Object[] { payId, "0" });
+			if (!flag && s != null && s.equals(s4)) {
+				flag = true;
+			}
+			if (jsonobject.optBoolean("checked")) {
+				s1 = s4;
+			}
+		}
+
+		if (!flag) {
+			setDefaultValue(1, s1);
+		}
+		addRadioButtons(radiogroup, arraylist, getDefaultValue(1));
+	}
+
+	private void setShipment(JSONArray jsonarray) throws JSONException {
+		RadioGroup radiogroup = mShipmentGroup;
+		ArrayList arraylist = new ArrayList();
+		boolean flag = false;
+		String defaultValue = getDefaultValue(2);
+		String s1 = null;
+		for (int i = 0; i < jsonarray.length(); i++) {
+			JSONObject jsonobject = jsonarray.getJSONObject(i);
+			String shipmentId = jsonobject.optString("shipment_id");
+			RadioButtonInfo radiobuttoninfo = new RadioButtonInfo();
+			radiobuttoninfo.mTitle = jsonobject.optString("brief");
+			radiobuttoninfo.addTag(TAG_CHECKOUT_SHIPMENT_ID, shipmentId);
+			arraylist.add(radiobuttoninfo);
+			if (!flag && defaultValue != null && defaultValue.equals(shipmentId)) {
+				flag = true;
+			}
+			if (jsonobject.optBoolean("checked")) {
+				s1 = shipmentId;
+			}
+		}
+
+		if (!flag) {
+			setDefaultValue(2, s1);
+		}
+		addRadioButtons(radiogroup, arraylist, getDefaultValue(2));
+	}
+
+	public void onActivityResult(int i, int j, Intent intent) {
+		if (j == -1 && i == 1) {
+			String s = intent.getStringExtra("com.xiaomi.shop.extra_address_id");
+			Log.d("CheckoutFragment finish from address activity:" + s);
+			Bundle bundle = new Bundle();
+			bundle.putString("address_id", s);
+			mContainer.setVisibility(View.GONE);
+		}
+		super.onActivityResult(i, j, intent);
+	}
+
+	public void onCheckedChanged(RadioGroup radiogroup, int i) {
+		RadioButton radiobutton = (RadioButton) radiogroup.findViewById(i);
+		if (radiogroup == mInvoiceGroup) {
+			if (TextUtils.equals(radiobutton.getTag().toString(), "2")) {
+				displayInvoiceTitle(true);
+				mInvoiceRadioButton = radiobutton;
+				radiobutton.setBackgroundResource(R.drawable.radiobottom_middle_invoice_p);
+			} else {
+				if (mInvoiceRadioButton != null) {
+					mInvoiceRadioButton.setBackgroundResource(R.drawable.radiobutton_bottom_bg);
+				}
+				displayInvoiceTitle(false);
+			}
+			setDefaultValue(4, radiobutton.getTag().toString());
+		} else {
+			if (radiogroup == mPaymentGroup) {
+				Object aobj[] = new Object[2];
+				aobj[0] = radiobutton.getTag(TAG_CHECKOUT_PAY_ID);
+				aobj[1] = radiobutton.getTag(TAG_CHECKOUT_PICKUP_ID);
+				setDefaultValue(1, String.format("%1$s_%2$s", aobj));
+				String s = radiobutton.getTag(TAG_CHECKOUT_PAY_ID).toString();
+				Bundle bundle = new Bundle();
+				bundle.putString("pay_id", s);
+				return;
+			}
+			if (radiogroup == mShipmentGroup) {
+				setDefaultValue(2, (String) radiobutton.getTag(TAG_CHECKOUT_SHIPMENT_ID));
+				return;
+			}
+			if (radiogroup == mDelivertimeGroup) {
+				setDefaultValue(3, radiobutton.getTag().toString());
+				return;
+			}
+		}
+	}
+
+	public void onCreate(Bundle bundle) {
+		super.onCreate(bundle);
+		Bundle bundle1 = getArguments();
+		if (bundle1 != null) {
+			mBuyId = bundle1.getString("com.xiaomi.shop.extra__buy");
+			if (mBuyId == null) {
+				mBuyId = "client__id_null";
+			}
+			boolean flag;
+			if (!mBuyId.equals("client__id_null")) {
+				flag = true;
+			} else {
+				flag = false;
+			}
+			mIsShopping = flag;
+		}
+	}
+
+	public View onCreateView(LayoutInflater layoutinflater, ViewGroup viewgroup, Bundle bundle) {
+		super.onCreateView(layoutinflater, viewgroup, bundle);
+		View view = layoutinflater.inflate(R.layout.checkout_fragment, viewgroup, false);
+		mCheckoutInfoContainer = (LinearLayout) view.findViewById(R.id.ll_checkout_info_container);
+		mCheckoutHintContainer = (LinearLayout) view.findViewById(R.id.ll_checkout_hint_container);
+		mCheckoutHint = (TextView) view.findViewById(R.id.tv_checkout_hint);
+		mAddressUp = (TextView) view.findViewById(R.id.tv_checkout_address_up);
+		mAddressMiddle = (TextView) view.findViewById(R.id.tv_checkout_address_middle);
+		mAddressBottom = (TextView) view.findViewById(R.id.tv_checkout_address_bottom);
+		// mLoadingView = (EmptyLoadingView)view.findViewById(2131296273);
+		mNext = (TextView) view.findViewById(R.id.tv_next);
+		mPaymentGroup = (RadioGroup) view.findViewById(R.id.rg_checkout_form_radiogroup_payment);
+		mPaymentGroup.setOnCheckedChangeListener(this);
+		mShipmentGroup = (RadioGroup) view.findViewById(R.id.rg_checkout_form_radiogroup_shipment);
+		mShipmentGroup.setOnCheckedChangeListener(this);
+		mDelivertimeGroup = (RadioGroup) view.findViewById(R.id.rg_checkout_form_radiogroup_delivertime);
+		mDelivertimeGroup.setOnCheckedChangeListener(this);
+		mInvoiceGroup = (RadioGroup) view.findViewById(R.id.rg_checkout_form_radiogroup_invoice);
+		mInvoiceGroup.setOnCheckedChangeListener(this);
+		mInvoiceTitle = (EditText) view.findViewById(R.id.et_checkout_form_invoice_title);
+		mInvoiceTitleBg = (LinearLayout) view.findViewById(R.id.ll_checkout_form_invoice_title_bg);
+		mAddress = (RelativeLayout) view.findViewById(R.id.rl_checkout_address_empty);
+		mAddress.setOnClickListener(new android.view.View.OnClickListener() {
+
+			public void onClick(View view1) {
+				openAddressActivity(mAddressId);
+			}
+		});
+		mNext.setOnClickListener(new android.view.View.OnClickListener() {
+
+			public void onClick(View view1) {
+				onNext();
+			}
+		});
+		mView = view;
+		mCheckoutAddressEmpty = (RelativeLayout) view.findViewById(R.id.rl_checkout_address_empty);
+		mCheckoutAddressEmpty.setVisibility(View.GONE);
+		mCheckoutAddressEmpty.setOnClickListener(new android.view.View.OnClickListener() {
+
+			public void onClick(View view1) {
+				Intent intent = null;// new Intent(getActivity(),AddressActivity.class);
+				intent.setAction("com.xiaomi.shop.add_address");
+				startActivityForResult(intent, 1);
+			}
+
+		});
+		/*
+		 * getActivity().getHomeButton().setOnClickListener(new android.view.View.OnClickListener() {
+		 * 
+		 * public void onClick(View view1) { getActivity().onBackPressed(); }
+		 * 
+		 * });
+		 */
+		mContainer = (ScrollView) view.findViewById(R.id.sv_checkout_container);
+		mBuyAddr = (EditText) view.findViewById(R.id.et_checkout_addr);
+		mBuyConsignee = (EditText) view.findViewById(R.id.et_checkout_addr_consignee);
+		mBuyTel = (EditText) view.findViewById(R.id.et_checkout_addr_tel);
+		if (mIsShopping) {
+			view.findViewById(R.id.ll_checkout_form_delivertime).setVisibility(View.GONE);
+			view.findViewById(R.id.ll_checkout_addr_layout).setVisibility(View.VISIBLE);
+		}
+		return view;
+	}
+
+	public void onStart() {
+		super.onStart();
+		getActivity().setTitle(R.string.title_checkout);
+	}
+
+	public void showInput(boolean flag) {
+		if (flag) {
+			mInvoiceTitle.setFocusable(true);
+			mInvoiceTitle.setFocusableInTouchMode(true);
+			mInvoiceTitle.requestFocus();
+			Utils.SoftInput.show(mInvoiceTitle.getContext(), mInvoiceTitle);
+		} else {
+			mInvoiceTitle.setFocusable(false);
+			mInvoiceTitle.setFocusableInTouchMode(false);
+			Utils.SoftInput.hide(mInvoiceTitle.getContext(), mInvoiceTitle.getWindowToken());
+		}
+	}
+
+}

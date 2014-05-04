@@ -1,0 +1,221 @@
+package cn.digione.yibaic.shop.bean;
+
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: youzh
+ * Date: 2014/3/24
+ * Time: 10:03
+ */
+public class ProductDetailBean implements Serializable {
+    private static final long serialVersionUID = -6021878885000020270L;
+    //组合产品
+    private List<ProductBean> groupProductList;
+    //产品id
+    private Integer id;
+    //是否售罄
+    private Integer isSoldout;
+    //开始售卖时间
+    private String onsaleTime;
+    //产品图片
+    private List<String> picturesList;
+    //品牌名称
+    private String proBrand;
+    //产品类别 1：手机 2：配件 3：产品组合
+    private Integer proClass;
+    //产品类别名称
+    private String proClassName;
+    //产品颜色
+    private String proColor;
+    //卖点
+    private String proDesc;
+    //型号
+    private String proModel;
+    //产品名称
+    private String proName;
+    //价格(传入分为单位)
+    private Integer proPrice;
+    //产品类型 1：普通产品 2：组合产品
+    private Integer proType;
+    private List<String> productDetailList;
+    //产品发布类型 1：普通产品 2：组合产品
+    private String publishName;
+
+    //ROM 大小
+    private String proRom;
+    private String proHTMLUrl;
+
+    /**
+     * 网络制式(1、TD-SCDMA，2、WCDMA)
+     */
+    private String proStandardName;
+    /**
+     * 当前型号所有产品中是否有可购买或可预约的产品。
+     */
+    private int sellType;
+
+    public List<ProductBean> getGroupProductList() {
+        return groupProductList;
+    }
+
+    public void setGroupProductList(List<ProductBean> groupProductList) {
+        this.groupProductList = groupProductList;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIsSoldout() {
+        return isSoldout;
+    }
+
+    public void setIsSoldout(Integer isSoldout) {
+        this.isSoldout = isSoldout;
+    }
+
+    public String getOnsaleTime() {
+        return onsaleTime;
+    }
+
+    public void setOnsaleTime(String onsaleTime) {
+        this.onsaleTime = onsaleTime;
+    }
+
+    public List<String> getPicturesList() {
+        return picturesList;
+    }
+
+    public void setPicturesList(List<String> picturesList) {
+        this.picturesList = picturesList;
+    }
+
+    public String getProBrand() {
+        return proBrand;
+    }
+
+    public void setProBrand(String proBrand) {
+        this.proBrand = proBrand;
+    }
+
+    public Integer getProClass() {
+        return proClass;
+    }
+
+    public void setProClass(Integer proClass) {
+        this.proClass = proClass;
+    }
+
+    public String getProClassName() {
+        return proClassName;
+    }
+
+    public void setProClassName(String proClassName) {
+        this.proClassName = proClassName;
+    }
+
+    public String getProColor() {
+        return proColor;
+    }
+
+    public void setProColor(String proColor) {
+        this.proColor = proColor;
+    }
+
+    public String getProDesc() {
+        return proDesc;
+    }
+
+    public void setProDesc(String proDesc) {
+        this.proDesc = proDesc;
+    }
+
+    public String getProModel() {
+        return proModel;
+    }
+
+    public void setProModel(String proModel) {
+        this.proModel = proModel;
+    }
+
+    public String getProName() {
+        return proName;
+    }
+
+    public void setProName(String proName) {
+        this.proName = proName;
+    }
+
+    public Integer getProPrice() {
+        return proPrice;
+    }
+
+    public void setProPrice(Integer proPrice) {
+        this.proPrice = proPrice;
+    }
+
+    public Integer getProType() {
+        return proType;
+    }
+
+    public void setProType(Integer proType) {
+        this.proType = proType;
+    }
+
+    public List<String> getProductDetailList() {
+        return productDetailList;
+    }
+
+    public void setProductDetailList(List<String> productDetailList) {
+        this.productDetailList = productDetailList;
+    }
+
+    public String getPublishName() {
+        return publishName;
+    }
+
+    public void setPublishName(String publishName) {
+        this.publishName = publishName;
+    }
+
+    public String getProRom() {
+        return proRom;
+    }
+
+    public void setProRom(String proRom) {
+        this.proRom = proRom;
+    }
+
+    public String getProHTMLUrl() {
+        return proHTMLUrl;
+    }
+
+    public void setProHTMLUrl(String proHTMLUrl) {
+        this.proHTMLUrl = proHTMLUrl;
+    }
+    /**
+     * 当前型号所有产品中是否有可购买或可预约的产品，从而决定页面的按钮。0立即预约 1立即购买。
+     */
+	public int getSellType() {
+		return sellType;
+	}
+
+	public void setSellType(int sellType) {
+		this.sellType = sellType;
+	}
+
+    public String getProStandardName() {
+        return proStandardName;
+    }
+
+    public void setProStandardName(String proStandardName) {
+        this.proStandardName = proStandardName;
+    }
+}

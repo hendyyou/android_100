@@ -1,0 +1,138 @@
+package cn.digione.yibaic.shop.adapter;
+
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+import cn.digione.yibaic.shop.bean.ShoppingCartItemBean;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+import cn.digione.yibaic.shop.util.Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 14-3-6 Time: 下午2:39
+ */
+public class ShoppingCartItemAdapter extends BaseAdapter {
+    private BaseActivity mContext;
+    private LayoutInflater mLayoutInflater;
+    private List<ShoppingCartItemBean> datas;
+    private ImageLoadingListener mImageLoadingListener;
+
+    // private int[] pics;
+
+    public ShoppingCartItemAdapter(BaseActivity mContext, List<ShoppingCartItemBean> datas) {
+        this.datas = datas;
+        this.mContext = mContext;
+        this.mLayoutInflater = LayoutInflater.from(mContext);
+        this.mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+    }
+
+    @Override
+    public int getCount() {
+        int count = 0;
+        if (datas != null && datas.size() > 0) {
+            count = datas.size();
+        }
+        return count;
+    }
+
+    @Override
+    public Object getItem(int position) {
+        Object object = null;
+        if (datas != null && datas.size() > 0) {
+            object = datas.get(position);
+        }
+        return object;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(final int position, View view, ViewGroup parent) {
+        ViewHolder viewHolder = null;
+        if (view == null) {
+            view = mLayoutInflater.inflate(R.layout.shopping_cartlist_item, null);
+            viewHolder = new ViewHolder();
+            viewHolder.picUrlIV = (ImageView) view.findViewById(R.id.iv_shopping_cart_list_pic);
+            viewHolder.textTitleTV = (TextView) view.findViewById(R.id.tv_shopping_cartlist_text_title);
+            viewHolder.textCenterTV = (TextView) view.findViewById(R.id.tv_shopping_cartlist_text_center);
+            viewHolder.itemCenterLL = (RelativeLayout) view.findViewById(R.id.rl_shopping_cart_item_container);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
+        }
+        // bindBackground(view, position);
+
+        final ShoppingCartItemBean cartItemBean = datas.get(position);
+        String proBrand = cartItemBean.getProBrand() == null ? "" : cartItemBean.getProBrand();
+        String proName = cartItemBean.getProName() == null ? "" : cartItemBean.getProName();
+    //    String proModel = cartItemBean.getProModel() == null ? "" : cartItemBean.getProModel();
+        String proColor = cartItemBean.getProColor() == null ? "" : cartItemBean.getProColor();
+        String proRom = cartItemBean.getProRom() == null ? "" : "\n" +cartItemBean.getProRom();
+        String proStandardName = cartItemBean.getProStandardName() == null ? "" : cartItemBean.getProStandardName();
+        String title = proBrand + " " + proName + " " + proColor +  proRom + " "+ proStandardName;
+
+        String picURL = cartItemBean.getProPic();
+        if (!TextUtils.isEmpty(picURL)) {
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            viewHolder.picUrlIV.setImageDrawable(null);
+            imageLoader.displayImage(picURL, viewHolder.picUrlIV, mImageLoadingListener);
+        } else {
+            viewHolder.picUrlIV.setImageResource(R.drawable.no_picture);
+        }
+        viewHolder.textTitleTV.setText(title);
+        String cartItemStr = mContext.getString(R.string.cart_item_center);
+        String price = Utils.Money.MoneyToYuan(cartItemBean.getProPrice());
+        String totalPrice = Utils.Money.MoneyToYuan(cartItemBean.getProPrice() * cartItemBean.getNum());
+        String cartItemCenter = String.format(cartItemStr, price, cartItemBean.getNum(), totalPrice);
+        viewHolder.textCenterTV.setText(cartItemCenter);
+        viewHolder.itemCenterLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("cart_item_object", cartItemBean);
+                bundle.putInt("cart_item_position", position);
+                mContext.showFragment("edit_cartitem_fragment", bundle, true);
+            }
+        });
+        return view;
+    }
+
+    protected void bindBackground(View view, int i) {
+        if (getCount() == 1) {
+            view.setBackgroundResource(R.drawable.list_item_single_bg);
+            return;
+        }
+        if (i == 0) {
+            view.setBackgroundResource(R.drawable.list_item_top_bg);
+            return;
+        }
+        if (i == -1 + getCount()) {
+            view.setBackgroundResource(R.drawable.list_item_bottom_bg);
+            return;
+        } else {
+            view.setBackgroundResource(R.drawable.list_item_middle_bg);
+            return;
+        }
+    }
+
+    private class ViewHolder {
+        ImageView picUrlIV;
+        TextView textTitleTV;
+        TextView textCenterTV;
+        RelativeLayout itemCenterLL;
+    }
+}

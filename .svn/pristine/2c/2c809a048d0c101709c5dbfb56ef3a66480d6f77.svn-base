@@ -1,0 +1,299 @@
+package cn.digione.yibaic.shop.adapter;
+
+import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+import cn.digione.yibaic.shop.acitvity.OrderListActivity;
+import cn.digione.yibaic.shop.bean.BookBean;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+import cn.digione.yibaic.shop.util.ToastUtil;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 2014/3/28 Time: 16:34
+ */
+public class AppointmentAdapter extends BaseAdapter {
+	private BaseActivity mContext;
+	private List<BookBean> mDatas;
+	private LayoutInflater mInflater;
+	private BookBean bookBean;
+	private ImageLoadingListener mImageLoadingListener;
+	private BtnOnClickListener mBtnOnClickListener;
+
+	public AppointmentAdapter(BaseActivity context, List<BookBean> datas, BtnOnClickListener btnOnClickListener) {
+		mContext = context;
+		mDatas = datas;
+		mInflater = LayoutInflater.from(mContext);
+		this.mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+		mBtnOnClickListener = btnOnClickListener;
+	}
+
+	@Override
+	public int getCount() {
+		return mDatas.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return mDatas.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public View getView(int position, View view, ViewGroup parent) {
+		ViewHolder holder = null;
+		if (view == null) {
+			holder = new ViewHolder();
+			view = mInflater.inflate(R.layout.book_list_item, null);
+			holder.rbBtn = (Button) view.findViewById(R.id.btn_appointment_buy);
+			// holder.cannotButBtn = (Button) view.findViewById(R.id.btn_appointment_cannot_buy);
+			holder.productPicIV = (ImageView) view.findViewById(R.id.iv_appointment_image);
+			holder.amNameTV = (TextView) view.findViewById(R.id.tv_appointment_name);
+			holder.salestarttimeTV = (TextView) view.findViewById(R.id.tv_appointment_rbstarttime);
+			holder.saleendtimeTV = (TextView) view.findViewById(R.id.tv_appointment_rbendtime);
+			holder.amProducTV = (TextView) view.findViewById(R.id.tv_appointment_product);
+			holder.amTimeTv = (TextView) view.findViewById(R.id.tv_appointment_time);
+			holder.amDescTv = (TextView) view.findViewById(R.id.tv_appointment_description);
+			view.setTag(holder);
+		} else {
+			holder = (ViewHolder) view.getTag();
+		}
+		bookBean = mDatas.get(position);
+		if (bookBean != null) {
+			// ProductColorBean colorBean = bookBean.getProductVO();
+			// BookBean appointmentBean = bookBean.getAppointmentVO();
+
+			/*
+			 * String proName = colorBean.getProName() == null ? "" : colorBean.getProName(); String proVersionl =
+			 * colorBean.getProVersion() == null ? "" : colorBean.getProVersion(); String proRom = colorBean.getProRom() ==
+			 * null ? "" : colorBean.getProRom(); String proColor = colorBean.getProColor() == null ? "" :
+			 * colorBean.getProColor(); String pro = proName + " " + proVersionl + "" + proRom + " " + proColor;
+			 * 
+			 * String amProduct = String.format(mContext.getString(R.string.appointment_product), pro);
+			 */
+			String amName = bookBean.getAmName();
+			holder.amNameTV.setText(amName);
+			// 抢购开始时间目前定义为预约结束时间
+			String saleStarttime = String.format(mContext.getString(R.string.appointment_rbstarttime),
+					bookBean.getSaleStartTime());
+			holder.salestarttimeTV.setText(saleStarttime);
+			String saleEndtime = String
+					.format(mContext.getString(R.string.appointment_rbendtime), bookBean.getSaleEndTime());
+
+			String amTime = String.format(mContext.getString(R.string.appointment_time), bookBean.getAmTime());
+
+			holder.saleendtimeTV.setText(saleEndtime);
+			holder.amProducTV.setText(bookBean.getProName());
+			holder.amTimeTv.setText(amTime);// 预约时间
+
+			// holder.amDescTv.setText(String.format(mContext.getString(R.string.can_buy_number), bookBean.getRbNum()));
+			String productPic = bookBean.getProPic();
+			if (!TextUtils.isEmpty(productPic)) {
+				ImageLoader imageLoader = ImageLoader.getInstance();
+				holder.productPicIV.setImageDrawable(null);
+				imageLoader.displayImage(productPic, holder.productPicIV, mImageLoadingListener);
+			} else {
+				holder.productPicIV.setImageResource(R.drawable.no_picture);
+			}
+
+			// 不支持预购
+			if (bookBean.getIsPrepaid() == 1) {
+				holder.rbBtn.setVisibility(View.VISIBLE);
+				// 3：预约已过期 4：未开放购买，5：立即购买，6：已售罄，12：已付款 13：去支付
+				switch (bookBean.getState()) {
+				case 3:
+					holder.rbBtn.setText(R.string.wait_buy);
+					holder.rbBtn.setEnabled(false);
+					break;
+				case 4: // 该产品处于预约期。此刻显示等待抢购。
+					holder.rbBtn.setText(R.string.wait_buy);
+					holder.rbBtn.setEnabled(false);
+					break;
+				case 5:
+					holder.rbBtn.setText(R.string.can_buy_now);
+					holder.rbBtn.setEnabled(true);
+					holder.rbBtn.setOnClickListener(new BuyBtnOnClickListener(bookBean.getProId()));
+					break;
+				case 6:
+					holder.rbBtn.setText(R.string.sell_out);
+					holder.rbBtn.setEnabled(false);
+					break;
+				/*
+				 * case 11: 不存在这种 holder.rbBtn.setText(R.string.wait_buy); holder.rbBtn.setEnabled(false); break;
+				 */
+				case 12:
+					holder.rbBtn.setText(R.string.had_payed);
+					holder.rbBtn.setEnabled(false);
+					break;
+				case 13: // 已经下了单。去支付
+					holder.rbBtn.setText(R.string.go_to_pay);
+					holder.rbBtn.setEnabled(true);
+					holder.rbBtn.setOnClickListener(new PayBtnOnClickListener(bookBean.getOrderId()));
+					break;
+				default:
+					holder.rbBtn.setVisibility(View.GONE);
+				}
+			} else if (bookBean.getIsPrepaid() == 2) {
+				holder.rbBtn.setVisibility(View.VISIBLE);
+				// 支持预购
+				// 3：预约已过期 4：未开放购买，5：立即购买，6：已售罄，11:我要付款，12：已付款 13：已生成订单未付款
+				switch (bookBean.getState()) {
+				case 3:// 我的预约列表。预约已过期，尚未开放购买，显示等待抢购
+					holder.rbBtn.setText(R.string.wait_buy);
+					holder.rbBtn.setEnabled(false);
+					break;
+				case 4: // 该产品处于预约期。此刻显示等待抢购。
+					holder.rbBtn.setText(R.string.wait_buy);
+					holder.rbBtn.setEnabled(false);
+					break;
+				case 5:
+					holder.rbBtn.setText(R.string.can_buy_now);
+					holder.rbBtn.setEnabled(true);
+					holder.rbBtn.setOnClickListener(new BuyBtnOnClickListener(bookBean.getProId()));
+					break;
+				case 6:
+					holder.rbBtn.setText(R.string.sell_out);
+					holder.rbBtn.setEnabled(false);
+					break;
+				case 11: // 立即付款(我要付款。其实是我要预购)。
+					holder.rbBtn.setText(R.string.pay_now);
+					holder.rbBtn.setEnabled(true);
+					holder.rbBtn.setOnClickListener(new PrePayBtnOnClickListener(bookBean.getProId()));
+					break;
+				case 12:// 已付款
+					holder.rbBtn.setText(R.string.had_payed);
+					holder.rbBtn.setEnabled(false);
+					// holder.rbBtn.setOnClickListener(new PayBtnOnClickListener(bookBean.getProId()));
+					break;
+				case 13: // 已经下了单。去支付
+					holder.rbBtn.setText(R.string.go_to_pay);
+					holder.rbBtn.setEnabled(true);
+					holder.rbBtn.setOnClickListener(new PayBtnOnClickListener(bookBean.getOrderId()));
+					break;
+				default:
+					holder.rbBtn.setVisibility(View.GONE);
+				}
+			}
+
+			/*
+			 * if (bookBean.getState() == 1) { holder.rbBtn.setVisibility(View.VISIBLE); //
+			 * holder.cannotButBtn.setVisibility(View.GONE); holder.rbBtn.setOnClickListener(new OnClickListener() {
+			 * 
+			 * @Override public void onClick(View v) { String url = Constants.NetWorkRequest.SHOPPING_ADD_CART_URL_031;
+			 * Map<String, String> map = new HashMap<String, String>(); map.put("productId", bookBean.getProId());
+			 * map.put("num", "1"); requestHttp(url, map, mAddShopCartHttpResponseHandler);
+			 * 
+			 * }
+			 * 
+			 * }); } else {
+			 * 
+			 * holder.rbBtn.setVisibility(View.GONE); // holder.cannotButBtn.setVisibility(View.VISIBLE); }
+			 */
+		}
+		return view;
+	}
+
+	public interface BtnOnClickListener {
+		public void prepay(String proId); // 预购
+
+		public void buy(String proId); // 立即购买
+
+	}
+
+	public static class ViewHolder {
+		Button rbBtn;
+		// Button cannotButBtn;
+		ImageView productPicIV;
+		TextView saleendtimeTV;
+		TextView amNameTV;
+		TextView amProducTV;
+		TextView salestarttimeTV;
+		TextView amDescTv;
+		TextView amTimeTv;
+	}
+
+	/**
+	 * 预购按钮
+	 * 
+	 */
+	private class PrePayBtnOnClickListener implements OnClickListener {
+		String proId;
+
+		PrePayBtnOnClickListener(String proId) {
+			this.proId = proId;
+		}
+
+		@Override
+		public void onClick(View v) {
+			if (mBtnOnClickListener != null) {
+				mBtnOnClickListener.prepay(this.proId);
+			}
+
+		}
+	}
+
+	/**
+	 * 立即购买按钮
+	 * 
+	 */
+	private class BuyBtnOnClickListener implements OnClickListener {
+		String proId;
+
+		BuyBtnOnClickListener(String proId) {
+			this.proId = proId;
+		}
+
+		@Override
+		public void onClick(View v) {
+			if (mBtnOnClickListener != null) {
+				mBtnOnClickListener.buy(this.proId);
+			}
+
+		}
+	}
+
+	/**
+	 * 去支付按钮
+	 * 
+	 */
+	private class PayBtnOnClickListener implements OnClickListener {
+		String orderId;
+
+		PayBtnOnClickListener(String orderId) {
+			this.orderId = orderId;
+
+		}
+
+		@Override
+		public void onClick(View v) {
+			if (orderId != null && !"".equals(orderId)) {
+				Intent intent = new Intent(mContext, OrderListActivity.class);
+				intent.setAction("order_detail");
+				intent.putExtra("order_id", orderId);
+				mContext.startActivity(intent);
+				mContext.finish();
+			} else {
+				ToastUtil.show(mContext.getString(R.string.order_no_exits));
+			}
+		}
+	}
+
+}

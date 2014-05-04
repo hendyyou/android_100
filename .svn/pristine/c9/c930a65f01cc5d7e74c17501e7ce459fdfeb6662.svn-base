@@ -1,0 +1,684 @@
+package cn.digione.yibaic.shop.common;
+
+public final class Constants {
+    /**
+     * 日志标识：common_android
+     */
+    public static final String TAG = "100Cshop";
+    /**
+     * 百度开放平台的API的KEY：de1HkBT2IAPsKs0G0VzecoGG
+     */
+    public static final String BAIDU_API_KEY = "de1HkBT2IAPsKs0G0VzecoGG";
+    // 正式版本需要更改
+    public static final String ACCOUNT_TYPE = "com.baidu";
+    /**
+     * 线程数量：5
+     */
+    public static final int THREAD_COUNT = 5;
+    /**
+     * 1:表示售罄
+     */
+    public static final int IS_SOLDOUT_YES = 0;
+    /**
+     * 0:表示售罄
+     */
+    public static final int IS_SOLDOUT_NO = 0;
+
+    /**
+     * 微信支付常量定义
+     */
+    public static final class WeiXinPay {
+        /**
+         * 微信开放平台的AppID：wx93fd9705e3db73f4
+         */
+        public static final String APP_ID = "wx93fd9705e3db73f4";
+        /**
+         * 微信开放平台和商户约定的密钥，微信开放平台的AppSecret：038e10df457b3064ca2c70b084a0c06e
+         * <p/>
+         * 注意：不能hardcode在客户端，建议genSign这个过程由服务器端完成
+         */
+        public static final String APP_SECRET = "038e10df457b3064ca2c70b084a0c06e";
+        /**
+         * 微信开放平台和商户约定的支付密钥，微信开放平台的支付专用签名串PaySignKey
+         * ：RuFwB4gCf7PLIpl8oe3JQGNUmaklEuamDrVmfL5QjTlda4ZM3qlZhmZFDk72fIBVhzx5S3zTe5UXdvnf6iUjkj7U6lDMU6TwXurGsTpOWSW0tyQap0nVhmBunOBtZaE5
+         * <p/>
+         * 注意：不能hardcode在客户端，建议genSign这个过程由服务器端完成
+         */
+        public static final String APP_KEY =
+                "RuFwB4gCf7PLIpl8oe3JQGNUmaklEuamDrVmfL5QjTlda4ZM3qlZhmZFDk72fIBVhzx5S3zTe5UXdvnf6iUjkj7U6lDMU6TwXurGsTpOWSW0tyQap0nVhmBunOBtZaE5";
+        /**
+         * 微信开放平台的商户号PartnerID：1218633701
+         */
+        public static final String PARTNER_ID = "1218633701";
+        /**
+         * 微信公众平台商户模块和商户约定的密钥：a36eef0b85dbced4e98619088b63b389
+         * <p/>
+         * 注意：不能hardcode在客户端，建议genPackage这个过程由服务器端完成
+         */
+        public static final String PARTNER_KEY = "a36eef0b85dbced4e98619088b63b389";
+        /**
+         * 返回结果通知URL：http://test20.100jia.cn/servicehost/jsonrest/android/order/OrderPay/0/wxPayAppNotify
+         */
+        public static final String NOTIFY_URL = "http://test20.100jia.cn/servicehost/jsonrest/android/order/OrderPay/0/wxPayAppNotify";
+    }
+
+    /***************************************************************************************/
+
+    /**
+     * 接口返回的code定义
+     */
+    public static final class IntfMsgCode {
+        /**
+         * 后台返回msgCode，没有提示：0
+         */
+        public static final int NOTIPS = 0;
+        /**
+         * 后台返回msgCode，成功：1
+         */
+        public static final int SUCCESS = 1;
+        /**
+         * 后台返回msgCode，失败：2
+         */
+        public static final int FAILURE = 2;
+        /**
+         * 后台返回msgCode，超时：3
+         */
+        public static final int TIMEOUT = 3;
+
+        /**
+         * 后台返回msgCode，超时：3
+         */
+        public static final int NOLOGIN = 3;
+
+    }
+
+    public static final class ShopCartOrder {
+        //收货人姓名
+        public final static String ORDER_CONSIGNEE = "orderVO.consignee";
+        //收货人地址
+        public final static String ORDER_CONSIGNEEADDRESS = "orderVO.consigneeAddress";
+        //收货人手机号码
+        public final static String ORDER_CONSIGNEEMOBILE = "orderVO.consigneeMobile";
+        //收货人电话
+        public final static String ORDER_CONSIGNEEPHONE = "orderVO.consigneePhone";
+        //收货人邮编
+        public final static String ORDER_CONSIGNEEPOSTCODE = "orderVO.consigneePostcode";
+        /**
+         * 收货人配送方式（1:周一至周五可配送，2:周一至周五、周末均可配送，3:仅周末配送，4:仅限白天配送）
+         */
+        public final static String ORDER_DELIVERYPERIOD = "orderVO.deliveryPeriod";
+        /**
+         * 收货人发票类型(0:不需要发票，1：普通发票)
+         */
+        public final static String ORDER_ISINVOICE = "orderVO.invoiceType";
+        /**
+         * 收货人发票抬头
+         */
+        public final static String ORDER_INVOICETITLE = "orderVO.invoiceTitle";
+        public final static String ORDER_AREAID = "orderVO.consigneeAreaId";
+        public final static String ORDER_CONSIGNEEADDRESSID = "orderVO.consigneeAddressId";
+        public final static String ORDER_PAYMENT = "payment";
+    }
+
+    /***************************************************************************************/
+    /**
+     * 数据文件名称定义
+     */
+    public static final class DataFile {
+        /**
+         * 记录客户端公用信息Default的key定义
+         */
+        public static final class DefaultKey {
+            /**
+             * 用户调试模式：pref_user_debug
+             */
+            public static final String PREF_USER_DEBUG = "pref_user_debug";
+            /**
+             * 客户端登录标识：app_login_flag
+             */
+            public static final String APP_LOGIN_FLAG = "app_login_flag";
+            /**
+             * 登录过的用户名：pref_user_names
+             */
+            public static final String PREF_USER_NAMES = "pref_user_names";
+            /**
+             * 用户ID：USER_ID
+             */
+            public static final String USER_ID = "USER_ID";
+            /**
+             * 用户状态：USER_STATE
+             */
+            public static final String USER_STATE = "USER_STATE";
+            /**
+             * 用户地区ID：USER_AREAID
+             */
+            public static final String USER_AREAID = "USER_AREAID";
+            /**
+             * 用户备注：USER_REMARK
+             */
+            public static final String USER_REMARK = "USER_REMARK";
+            /**
+             * 用户别名：USER_NICKNAME
+             */
+            public static final String USER_NICKNAME = "USER_NICKNAME";
+            /**
+             * 用户邮箱地址：USER_EMAIL
+             */
+            public static final String USER_EMAIL = "USER_EMAIL";
+            /**
+             * 用户名：USER_USERNAME
+             */
+            public static final String USER_USERNAME = "USER_USERNAME";
+            /**
+             * 用户手机号码：USER_MOBILE
+             */
+            public static final String USER_MOBILE = "USER_MOBILE";
+            /**
+             * 购物车数量：shopping_count
+             */
+            public static final String SHOPPING_COUNT = "shopping_count";
+        }
+    }
+
+    public static final class NetWorkRequest {
+        /**
+         * 页大小：12
+         */
+        public static final int PAGE_SIZE = 12;
+        /**
+         *
+         */
+        public static final String BaiduLoggedInUser_URL =
+                "https://openapi.baidu.com/rest/2.0/passport/users/getLoggedInUser";
+        /**
+         * 001：产品类别接口：product/Product/0/getProductClass
+         */
+        public static final String CATEGORY_URL_001 = "product/Product/0/getProductClass";
+        /**
+         * 产品类别接口：提供一个ID可直达详情页
+         */
+        public static final String CATEGORY_URL_TO_DETAIL_002 = "product/Product/0/getProductClassToDetail";
+        /**
+         * 002：产品分类接口：product/Product/0/searchProductGroupByProModel
+         */
+        public static final String PRODUCT_LIST_URL_002 = "product/Product/0/searchProductGroupByProModel";
+        /**
+         * 003：搜索产品接口：product/Product/0/searchProduct
+         */
+        public static final String PRODUCT_COLOR_LIST_URL_003 = "product/Product/0/searchProduct";
+        /**
+         * 004：产品详情接口：product/Product/0/getProductInfo
+         */
+        public static final String PRODUCT_DETAIL_URL_004 = "product/Product/0/getProductInfo";
+        /**
+         * 005：100jia用户登录接口：user/UserLogin/0/login
+         */
+        public static final String LOGIN_IN_URL_005 = "user/UserLogin/0/login";
+        /**
+         * 006：百度用户登录接口：user/UserLogin/0/baiduLogin
+         */
+        public static final String BAIDU_LOGIN_URL_006 = "user/UserLogin/0/baiduLogin";
+        /**
+         * 007：用户登出接口：user/UserLogin/0/exitLogin
+         */
+        public static final String LOGIN_OUT_URL_007 = "user/UserLogin/0/exitLogin";
+        /**
+         * 008：查询用户接口：user/User/0/searchUser
+         */
+        public static final String USER_INFO_GET_URL_008 = "user/User/0/searchUser";
+        /**
+         * 018：根据areaId查询子区域接口：sys/AreaDict/0/findAreaInfoBySupperId
+         */
+        public static final String PROVINCE_URL_018 = "sys/AreaDict/0/findAreaInfoBySupperId"; // 请求省份/市/县区
+        /**
+         * 020：创建、更新收货地址接口：sys/ConsigneeAddress/0/createOrUpdateConsigneeAddress
+         */
+        public static final String COMMIT_ADDRESS_020 = "sys/ConsigneeAddress/0/createOrUpdateConsigneeAddress";
+        //地址提交(创建或者修改)
+        /**
+         * 015：查询收货地址接口：sys/ConsigneeAddress/0/searchConsigneeAddress
+         */
+        public static final String QUERY_ADDRESS_015 = "sys/ConsigneeAddress/0/searchConsigneeAddress";//查询收货地址
+        /**
+         * 021：删除收货地址接口：sys/ConsigneeAddress/0/deleteConsigneeAddress
+         */
+        public static final String DELETE_ADDRESS_021 = "sys/ConsigneeAddress/0/deleteConsigneeAddress";//删除收货地址
+        /**
+         * 024：查询订单列表接口：order/Order/0/list
+         */
+        public static final String QUERY_ORDER_LIST_024 = "order/Order/0/list";
+        /**
+         * 025：查询订单详情接口：order/Order/$id/detail
+         */
+        public static final String QUERY_ORDER_DETAIL_025 = "order/Order/$id/detail";
+        /**
+         * 028：查询加币接口：sys/JiaMoney/0/SearchJiaMoney
+         */
+        public static final String JIA_BALANCE_URL_028 = "sys/JiaMoney/0/SearchJiaMoney";
+        /**
+         * 040：查询用户预约信息接口：sys/Appointment/0/searchUserAppointmentList
+         */
+        public static final String SEARCH_USER_APPOINTMENT_LIST_URL_040 = "sys/Appointment/0/searchUserAppointmentList";
+        /**
+         * 031：添加购物车接口：order/ShoppingCart/0/add
+         */
+        public static final String SHOPPING_ADD_CART_URL_031 = "order/ShoppingCart/0/add";
+        /**
+         * 030：查询购物车列表接口：order/ShoppingCart/0/listShoppingCarts
+         */
+        public static final String SHOPPING_QUERY_CART_URL_030 = "order/ShoppingCart/0/listShoppingCarts";
+
+        /**
+         * 030：查询购物车数量：order/ShoppingCart/0/getShoppingCartsCount
+         */
+        public static final String SHOPPING_QUERY_CART_COUNT_URL_030 = "order/ShoppingCart/0/getShoppingCartsCount";
+
+        /**
+         * 032：删除购物车接口：order/ShoppingCart/$id/delete
+         */
+        public static final String SHOPPING_DELETE_CART_URL_032 = "order/ShoppingCart/%1$s/delete";
+        /**
+         * 033：修改购物车接口：order/ShoppingCart/$id/modifyProductNum
+         */
+        public static final String SHOPPING_MODIFY_CART_URL_033 = "order/ShoppingCart/%1$s/modifyProductNum";
+        /**
+         * 036：确认订单接口：order/ShoppingCart/0/confirm
+         */
+        public static final String SHOPPING_CART_ORDER_CONFIRM_URL_036 = "order/ShoppingCart/0/confirm";
+        /**
+         * 037：生成订单接口：order/ShoppingCart/0/order
+         */
+        public static final String SHOPPING_CART_ORDER_SUBMIT_URL_037 = "order/ShoppingCart/0/order";
+
+        /**
+         * 038：验证加码接口 : order/Order/0/validateJCode
+         */
+        public static final String VERIFICATION_JCODE_URL = "order/Order/0/validateJCode";
+        /**
+         * 041：创建用户预约信息接口：sys/Appointment/0/createUserAppointment
+         */
+        public static final String CREATE_USER_APPOINTMENT_URL_041 = "sys/Appointment/0/createUserAppointment";
+        /**
+         * 026：取消订单接口：order/Order/$id/cancel
+         */
+        public static final String ORDER_CANCEL_URL_026 = "order/Order/$id/cancel";
+        /**
+         * 022：获取广告列表接口：sys/Advertising/0/getAdvertisingList
+         */
+        public static final String ACTIVITIES_LIST_URL_022 = "sys/Advertising/0/getAdvertisingList";
+        /**
+         * 016：设置默认收货地址：sys/ConsigneeAddress/0/setDefaultConsigneeAddress
+         */
+        public static final String CHANGE_DEFAULT_ADDRESS_URL_016 = "sys/ConsigneeAddress/0/setDefaultConsigneeAddress";
+        /**
+         * 039：查询用户优惠券列表接口：sys/Coupons/0/searchCouponsList
+         */
+        public static final String SEARCH_COUPON_LIST_URL_039 = "sys/Coupons/0/searchCouponsList";
+        /**
+         * 044：查询专题页数据接口：user/User/0/index
+         */
+        public static final String USER_INDEX_URL_044 = "user/User/0/index";
+
+        /**
+         * 009：用户注册接口：user/Register/0/register
+         */
+        public static final String REGISTER_URL_009 = "user/Register/0/register";
+        /**
+         * 010：忘记密码接口：user/UserLogin/0/forgetPassword
+         */
+        public static final String FORGET_PASSWORD_URL_010 = "user/UserLogin/0/forgetPassword";
+        /**
+         * 011：手机号码重置密码接口：user/UserLogin/0/mobileResetPassword
+         */
+        public static final String MOBILE_RESET_PASSWORD_URL_011 = "user/UserLogin/0/mobileResetPassword";
+        /**
+         * 012：发送短信验证码接口：user/Register/0/sendSmsCode
+         */
+        public static final String SEND_SMS_CODE_URL_012 = "user/Register/0/sendSmsCode";
+        /**
+         * 039：使用优惠码接口：order/Order/0/useConCode
+         */
+        public static final String USE_CON_CODE_URL_039 = "order/OrderPay/0/useConCode";
+        /**
+         * 012：取消优惠码接口：order/Order/0/cancelConCode
+         */
+        public static final String CANCEL_CON_CODE_URL_012 = "order/OrderPay/0/cancelConCode";
+        /**
+         * 040：使用加币接口：order/Order/0/useJiaMoney
+         */
+        public static final String USE_JIA_MONEY_URL_040 = "order/OrderPay/0/useJiaMoney";
+        /**
+         * 041：取消加币接口：order/Order/0/cancelJiaMoney
+         */
+        public static final String CANCEL_JIA_MONEY_URL_041 = "order/OrderPay/0/cancelJiaMoney";
+        /**
+         * 051：加币优惠券支付接口：order/OrderPay/0/payForJiaMoneyOrConCode
+         */
+        public static final String PAY_FOR_JIA_MONEY_OR_COUPON_URL_051 = "order/OrderPay/0/payForJiaMoneyOrConCode";
+        /**
+         * 052：获取APP的微信支付请求信息接口：order/OrderPay/0/toWXPayForApp
+         */
+        public static final String TO_PAY_FOR_APP_URL_052 = "order/OrderPay/0/toWXPayForApp";
+        /**
+         * 053：生成预支付数据包信息接口：order/OrderPay/0/genProductArgs
+         */
+        public static final String GEN_PRODUCT_ARGS_URL_053 = "order/OrderPay/0/genProductArgs";
+        /**
+         * 054：生成微信支付PayReq接口：order/OrderPay/0/genSendPayReq
+         */
+        public static final String GEN_SEND_PAY_REQ_URL_054 = "order/OrderPay/0/genSendPayReq";
+    }
+
+    public static final class AccountFragment {
+        public static final int ORDER_LIST = 2;
+        public static final int BOOK_LIST = 3;
+    }
+
+    /**
+     * 消息代码常量定义
+     */
+    public static final class MsgCode {
+        /**
+         * 显示更新提示对话框:11
+         */
+        public static final int SHOW_UPDATE_DIALOG = 11;
+        /**
+         * APK下载失败:12
+         */
+        public static final int APK_DOWN_ERROR = 12;
+        /**
+         * 显示无网络对话框:13
+         */
+        public static final int SHOW_NO_NETWORK = 13;
+    }
+
+    /***************************************************************************************/
+    /**
+     * 系统中参数名定义
+     */
+    public static final class ArgName {
+
+        /**
+         * 界面使用的bundle参数名定义
+         */
+        public static final class UI {
+            /**
+             * RegisterAccountActivity的参数名定义
+             */
+            public static final class RegisterAccountActivity {
+                /**
+                 * 标题：title_name
+                 */
+                public static final String TITLE_NAME = "title_name";
+                /**
+                 * 模式类型：mode_type
+                 */
+                public static final String MODE_TYPE = "mode_type";
+
+            }
+
+            /**
+             * RegisterSelectAccountTypeFragment的参数名定义
+             */
+            public static final class RegisterSelectAccountType {
+                /**
+                 * 模式类型：mode_type
+                 */
+                public static final String MODE_TYPE = "mode_type";
+
+            }
+
+            /**
+             * RegisterPasswordFragment的参数名定义
+             */
+            public static final class RegisterPassword {
+                /**
+                 * 标题：title_name
+                 */
+                public static final String REGISTER = "register";
+                /**
+                 * 账户类型：account_type
+                 */
+                public static final String ACCOUNT_TYPE = "account_type";
+                /**
+                 * 模式类型：mode_type
+                 */
+                public static final String MODE_TYPE = "mode_type";
+            }
+
+            /**
+             * RegisterSmsSentFragment的参数名定义
+             */
+            public static final class RegisterSmsSent {
+                /**
+                 * 标题：title_name
+                 */
+                public static final String TITLE_NAME = "title_name";
+
+            }
+
+            /**
+             * RegisterEmailSentFragment的参数名定义
+             */
+            public static final class RegisterEmailSent {
+                /**
+                 * 标题：title_name
+                 */
+                public static final String TITLE_NAME = "title_name";
+                /**
+                 * 邮箱地址：title_name
+                 */
+                public static final String EMAIL = "email";
+
+            }
+
+            /**
+             * PhoneOperateResultFragment的参数名定义
+             */
+            public static final class PhoneOperateResult {
+                /**
+                 * 标题：title_name
+                 */
+                public static final String TITLE_NAME = "title_name";
+                /**
+                 * 显示状态描述ID：status_text_id
+                 */
+                public static final String STATUS_TEXT_ID = "status_text_id";
+
+            }
+
+            /**
+             * OrderPayFragment的参数名定义
+             */
+            public static final class OrderPay {
+                /**
+                 * 订单详情Bean：orderDetailBean
+                 */
+                public static final String ORDER_DETAIL_BEAN = "orderDetailBean";
+
+            }
+        }
+
+        /**
+         * 请求参数名定义
+         */
+        public static final class Request {
+            /**
+             * 用户注册
+             */
+            public static final class Register {
+                /**
+                 * 手机号码：userVO.mobile
+                 */
+                public static final String USER_VO_MOBILE = "userVO.mobile";
+                /**
+                 * 邮箱地址：userVO.email
+                 */
+                public static final String USER_VO_EMAIL = "userVO.email";
+                /**
+                 * 密码：userVO.password
+                 */
+                public static final String USER_VO_PASSWORD = "userVO.password";
+                /**
+                 * 密码：userVO.password
+                 */
+                public static final String PHONE_CODE = "phoneCode";
+            }
+
+            public static final class ForgetPassword {
+                /**
+                 * 手机号码或电子邮箱：loginString
+                 */
+                public static final String LOGIN_STRING = "loginString";
+                /**
+                 * 新密码：newPassword
+                 */
+                public static final String NEW_PASSWORD = "newPassword";
+                /**
+                 * 手机验证码：validateCode
+                 */
+                public static final String VALIDATE_CODE = "validateCode";
+            }
+
+            public static final class SendSmsCode {
+                /**
+                 * 手机号码：userVO.mobile
+                 */
+                public static final String USER_VO_MOBILE = "userVO.mobile";
+            }
+
+            public static final class UseOrCancelCoupon {
+                /**
+                 * 订单Id：orderId
+                 */
+                public static final String ORDER_ID = "orderId";
+                /**
+                 * 优惠码：conCode
+                 */
+                public static final String CON_CODE = "conCode";
+                /**
+                 * 加币使用金额：jiaCurrencyAmt
+                 */
+                public static final String JIA_CURRENCY_AMT = "jiaCurrencyAmt";
+            }
+
+            public static final class UseOrCancelJiaCoin {
+                /**
+                 * 订单Id：orderId
+                 */
+                public static final String ORDER_ID = "orderId";
+                /**
+                 * 加币使用个数：jiaCurrencyUsedCount
+                 */
+                public static final String JIA_CURRENCY_USED_COUNT = "jiaCurrencyUsedCount";
+                /**
+                 * 优惠码：conCode
+                 */
+                public static final String CON_CODE = "conCode";
+            }
+
+            public static final class PayForJiaCoinOrCoupon {
+                /**
+                 * 订单Id：orderId
+                 */
+                public static final String ORDER_ID = "orderId";
+                /**
+                 * 加币使用金额：jiaCurrencyAmt
+                 */
+                public static final String JIA_CURRENCY_AMT = "jiaCurrencyAmt";
+                /**
+                 * 优惠码：conCode
+                 */
+                public static final String CON_CODE = "conCode";
+                /**
+                 * 优惠金额：preferentialAmt
+                 */
+                public static final String PREFERENTIAL_AMT = "preferentialAmt";
+            }
+
+            public static final class GenProductArgs {
+                /**
+                 * 订单Id：orderId
+                 */
+                public static final String ORDER_ID = "orderId";
+                /**
+                 * 加币使用金额：jiaCurrencyAmt
+                 */
+                public static final String JIA_CURRENCY_AMT = "jiaCurrencyAmt";
+                /**
+                 * 优惠码：conCode
+                 */
+                public static final String CON_CODE = "conCode";
+                /**
+                 * 优惠金额：preferentialAmt
+                 */
+                public static final String PREFERENTIAL_AMT = "preferentialAmt";
+                /**
+                 * 客户端IP：clientIp
+                 */
+                public static final String CLIENT_IP = "clientIp";
+                /**
+                 * 唯一串：noncestr
+                 */
+                public static final String NONCESTR = "noncestr";
+                /**
+                 * 时间戳：timestamp
+                 */
+                public static final String TIMESTAMP = "timestamp";
+            }
+
+            public static final class GenSendPayReq {
+                /**
+                 * 微信订单Id：prepayId
+                 */
+                public static final String PREPAY_ID = "prepayId";
+                /**
+                 * 唯一串：noncestr
+                 */
+                public static final String NONCESTR = "noncestr";
+                /**
+                 * 时间戳：timestamp
+                 */
+                public static final String TIMESTAMP = "timestamp";
+            }
+        }
+    }
+
+    /***************************************************************************************/
+    /**
+     * 系统中使用的bundle参数取值常量
+     */
+    public static final class ArgValue {
+        /**
+         * ModeType的参数取值
+         */
+        public static final class ModeType {
+            /**
+             * 模式类型：mode_type，1：注册
+             */
+            public static final int REGISTER = 1;
+            /**
+             * 模式类型：mode_type，2：忘记密码
+             */
+            public static final int FORGET_PASSWORD = 2;
+
+        }
+
+        /**
+         * AccountType的参数取值
+         */
+        public static final class AccountType {
+            /**
+             * 账户类型：account_type，1：手机号码
+             */
+            public static final int PHONE = 1;
+            /**
+             * 账户类型：account_type，2：邮箱地址
+             */
+            public static final int EMAIL = 2;
+
+        }
+
+    }
+
+}

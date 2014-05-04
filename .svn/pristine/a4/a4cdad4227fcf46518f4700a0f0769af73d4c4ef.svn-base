@@ -1,0 +1,32 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.io.Serializable;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: Simpson
+ * Date: 2014/4/8
+ * Time: 9:56
+ */
+public class ForgetPasswordBean implements Serializable {
+
+    private static final long serialVersionUID = 3710575679180693178L;
+    /**
+     * 使用手机号码忘记密码找回：1
+     */
+    public static final int PHONE = 1;
+    /**
+     * 使用邮箱地址忘记密码找回：2
+     */
+    public static final int EMAIL = 2;
+
+    private Integer code;
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+}

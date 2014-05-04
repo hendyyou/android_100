@@ -1,0 +1,89 @@
+package cn.digione.yibaic.shop.ui;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.loopj.android.http.RequestParams;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+import cn.digione.yibaic.shop.adapter.ActivitiesListAdapter;
+import cn.digione.yibaic.shop.bean.ActivitiesBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.Log;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+
+public class ActivitieListFragment extends BaseFragment {
+
+	private List<ActivitiesBean> activitiesList;
+	private ListView actListView;
+	private ActivitiesListAdapter actListAdapter;
+	private HttpClient client;
+
+	public static ActivitieListFragment newInstance(String s) {
+		ActivitieListFragment newFragment = new ActivitieListFragment();
+		Bundle bundle = new Bundle();
+		newFragment.setArguments(bundle);
+		return newFragment;
+
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mCustomerJsonHttpResponseHandler = new CustomerJsonHttpResponseHandler<ArrayList<ActivitiesBean>>(getActivity()) {
+			@Override
+			public void processCallSuccess(ArrayList<ActivitiesBean> outBean, String msg) {
+
+				if (outBean != null && outBean.size() > 0) {
+					activitiesList = outBean;
+					actListAdapter = null;
+					actListAdapter = new ActivitiesListAdapter((BaseActivity) getActivity(), activitiesList);
+					actListView.setAdapter(actListAdapter);
+				} else {
+					ActivitiesBean activitiesBean = new ActivitiesBean();
+					activitiesBean.setPicUrl("http://211.154.154.246/productpics/201403/17/20140317171232692142_4.jpg");
+					activitiesBean.setProModel("100c");
+					activitiesBean.setUrl("http://www.100jia.cn/default.html");
+					activitiesList = new ArrayList<ActivitiesBean>();
+					activitiesList.add(activitiesBean);
+					actListAdapter = new ActivitiesListAdapter((BaseActivity) getActivity(), activitiesList);
+					actListView.setAdapter(actListAdapter);
+				}
+			}
+		};
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.activitis_fragment, container, false);
+		actListView = (ListView) view.findViewById(R.id.activities_lisview);
+		if (Utils.Network.isHasNetwork(getActivity())) {
+			String url = Constants.NetWorkRequest.ACTIVITIES_LIST_URL;
+			if (client == null) {
+				client = HttpClient.getInstall(getActivity());
+			}
+			client.postAsync(url, null, mCustomerJsonHttpResponseHandler);
+		} else {
+			ToastUtil.show(getActivity(), getString(R.string.msg_networkfail), ToastUtil.LENGTH_SHORT);
+		}
+		return view;
+
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
+
+}

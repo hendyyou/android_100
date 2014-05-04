@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				style="@style/Widget.TitleBar">
+    <ImageView
+		android:id="@+id/title_bar_home"
+		android:background="@drawable/title_bar_back_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:layout_alignParentLeft="true" />
+    <LinearLayout
+		android:id="@+id/title_right_bar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true">
+        <FrameLayout
+			android:id="@+id/title_bar_custom_view"
+			android:background="@drawable/title_bar_shopping_cart"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:gravity="center">
+            <TextView
+				android:gravity="center"
+				android:layout_gravity="top|right|center"
+				android:id="@+id/title_bar_shopping_count"
+				android:visibility="invisible"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="5.0dip"
+				android:layout_marginRight="1.0dip"
+				android:textSize="16sp"
+				style="@style/TextAppearance.Small.Inverse" />
+        </FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+		android:orientation="horizontal"
+		android:id="@+id/custom_container"
+		android:paddingLeft="@dimen/title_bar_padding"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_toLeftOf="@id/title_right_bar"
+		android:layout_toRightOf="@id/title_bar_home">
+        <TextView
+			android:gravity="center"
+			android:layout_gravity="center_vertical"
+			android:id="@+id/title_bar_title"
+			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:text="@string/app_name"
+			style="@style/TextAppearance.Title.Bar" />
+    </LinearLayout>
+	<LinearLayout
+		android:id="@+id/ll_title_bottom_line"
+		android:layout_width="fill_parent"
+		android:layout_height="2dip"
+		android:background="@drawable/title_bottom_line"
+		android:visibility="gone"
+		android:orientation="horizontal"
+		android:layout_alignParentBottom="true">
+		</LinearLayout>
+</RelativeLayout>

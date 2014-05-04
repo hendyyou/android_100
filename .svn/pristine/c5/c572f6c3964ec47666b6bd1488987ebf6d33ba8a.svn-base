@@ -1,0 +1,208 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.util.ArrayList;
+
+/**
+ * 订单详情实体
+ * 
+ * @author Administrator
+ * 
+ */
+public class OrderDetailBean {
+	private String orderId;
+	/**
+	 * 订单最终总费用
+	 */
+	private int orderAmount;
+
+	/**
+	 * 商品总价(不包含运费和优惠)
+	 */
+	private int productPriceAmt;
+	/**
+	 * 订单状态(10未付款、20等待发货、40已发货、50已收货)
+	 */
+	private int orderStatus;
+	/**
+	 * 订单状态(已付款、未付款)
+	 */
+	private String orderStatusName;
+	/**
+	 * 运费
+	 */
+	private int transCost;
+
+	/**
+	 * 优惠金额
+	 */
+	private int preferential;
+
+	/**
+	 * 下单时间
+	 */
+	private String orderTime;
+
+	/**
+	 * 订单编号
+	 */
+	private String orderNo;
+
+	/**
+	 * 收货地址
+	 */
+	private String consigneeAddress;
+
+	/**
+	 * 收货人
+	 */
+	private String consignee;
+	/**
+	 * 发票类型
+	 */
+	private String invoiceTypeName;
+
+	/**
+	 * 能否取消
+	 */
+	private int canCancel;
+	/**
+	 * 优惠
+	 */
+	private int preferentialAmt;
+	/**
+	 * 商品数量
+	 */
+	private int productCount;
+	/**
+	 * 订单中的产品
+	 */
+	private ArrayList<OrderProductBean> orderItemVOs;
+
+	public int getOrderAmount() {
+		return orderAmount;
+	}
+
+	public void setOrderAmount(int orderAmount) {
+		this.orderAmount = orderAmount;
+	}
+
+	public int getProductPriceAmt() {
+		return productPriceAmt;
+	}
+
+	public void setProductPriceAmt(int productPriceAmt) {
+		this.productPriceAmt = productPriceAmt;
+	}
+
+	public int getTransCost() {
+		return transCost;
+	}
+
+	public void setTransCost(int transCost) {
+		this.transCost = transCost;
+	}
+
+	public int getPreferential() {
+		return preferential;
+	}
+
+	public void setPreferential(int preferential) {
+		this.preferential = preferential;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public String getConsigneeAddress() {
+		return consigneeAddress;
+	}
+
+	public void setConsigneeAddress(String consigneeAddress) {
+		this.consigneeAddress = consigneeAddress;
+	}
+
+	public String getConsignee() {
+		return consignee;
+	}
+
+	public void setConsignee(String consignee) {
+		this.consignee = consignee;
+	}
+
+	public String getInvoiceTypeName() {
+		return invoiceTypeName;
+	}
+
+	public void setInvoiceTypeName(String invoiceTypeName) {
+		this.invoiceTypeName = invoiceTypeName;
+	}
+
+	public int getCanCancel() {
+		return canCancel;
+	}
+
+	public void setCanCancel(int canCancel) {
+		this.canCancel = canCancel;
+	}
+
+	public int getPreferentialAmt() {
+		return preferentialAmt;
+	}
+
+	public void setPreferentialAmt(int preferentialAmt) {
+		this.preferentialAmt = preferentialAmt;
+	}
+
+	public ArrayList<OrderProductBean> getOrderItemVOs() {
+		return orderItemVOs;
+	}
+
+	public void setOrderItemVOs(ArrayList<OrderProductBean> orderItemVOs) {
+		this.orderItemVOs = orderItemVOs;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+
+	public String getOrderStatusName() {
+		return orderStatusName;
+	}
+
+	public void setOrderStatusName(String orderStatusName) {
+		this.orderStatusName = orderStatusName;
+	}
+
+	public String getOrderTime() {
+		return orderTime;
+	}
+
+	public void setOrderTime(String orderTime) {
+		this.orderTime = orderTime;
+	}
+
+	public int getProductCount() {
+		return productCount;
+	}
+
+	public void setProductCount(int productCount) {
+		this.productCount = productCount;
+	}
+
+	public int getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(int orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+}

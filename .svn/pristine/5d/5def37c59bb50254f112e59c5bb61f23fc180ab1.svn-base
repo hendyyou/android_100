@@ -1,0 +1,283 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.ShopApp;
+import cn.digione.yibaic.shop.acitvity.AddressManagementActivity;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+import cn.digione.yibaic.shop.acitvity.OrderListActivity;
+import cn.digione.yibaic.shop.bean.JiaCoinBean;
+import cn.digione.yibaic.shop.bean.JsonNoneOutBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.Log;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.baidu.api.Baidu;
+
+/**
+ * 服务首页
+ */
+public class ServiceFragment extends BaseFragment {
+	private RelativeLayout loginLayout;
+	private RelativeLayout logoutLayout;
+	private RelativeLayout orderListLayout;
+	private RelativeLayout addressManagementLayout;
+	private RelativeLayout amListRL;
+	private RelativeLayout myCouponsLayout;
+	private TextView jiaBalanceTextView;
+	private AlertDialog alertDialog;
+	private HttpClient client;
+	private CustomerJsonHttpResponseHandler<JiaCoinBean> jiaBalanceHttpResponseHandler;
+	private CustomerJsonHttpResponseHandler<JsonNoneOutBean> logOutJsonHttpResponseHandler;
+
+	// book_list
+
+	public static ServiceFragment newInstance(String s) {
+		ServiceFragment newFragment = new ServiceFragment();
+		Bundle bundle = new Bundle();
+		newFragment.setArguments(bundle);
+		return newFragment;
+
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Boolean isLogin = Utils.Preference.getBooleanPref(getActivity(), "app_login_flag", false);
+
+		if (!isLogin) {
+			loginLayout.setVisibility(View.VISIBLE);
+			logoutLayout.setVisibility(View.GONE);
+		} else {
+			loginLayout.setVisibility(View.GONE);
+			logoutLayout.setVisibility(View.VISIBLE);
+		}
+		if (Utils.Network.isHasNetwork(getActivity())) {
+			HttpClient client = HttpClient.getInstall(getActivity());
+			String url = Constants.NetWorkRequest.JIA_BALANCE_URL_028;
+			client.postAsync(url, null, jiaBalanceHttpResponseHandler);
+		} else {
+			ToastUtil.show(getActivity(), getString(R.string.msg_network_fail), ToastUtil.LENGTH_SHORT);
+		}
+		Log.d("ServiceFragment--------onresume");
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		jiaBalanceHttpResponseHandler = new CustomerJsonHttpResponseHandler<JiaCoinBean>(getActivity()) {
+
+			@Override
+			public void processCallSuccess(JiaCoinBean outBean, String msg) {
+				// TODO Auto-generated method stub
+				if (outBean == null) {
+					jiaBalanceTextView.setText(getString(R.string.my_jiacoin) + 0);
+				} else {
+					jiaBalanceTextView.setText(getString(R.string.my_jiacoin) + outBean.getBalance());
+				}
+			}
+		};
+
+		logOutJsonHttpResponseHandler = new CustomerJsonHttpResponseHandler<JsonNoneOutBean>(getActivity()) {
+
+			@Override
+			public void processCallSuccess(JsonNoneOutBean outBean, String msg) {
+				// TODO Auto-generated method stub
+				Utils.Preference.setBooleanPref(getActivity(), "app_login_flag", false);
+				loginLayout.setVisibility(View.VISIBLE);
+				logoutLayout.setVisibility(View.GONE);
+				if (ShopApp.getInstance().getBaidu() != null) {
+					ShopApp.getInstance().getBaidu().clearAccessToken();
+					ShopApp.getInstance().setBaidu(null);
+				}
+				Utils.Preference.removeMapPref(getBaseActivity(), getUserMap());
+				ShopApp.getInstance().setUser(null);
+				getBaseActivity().updateShoppingCountRequestHttp();
+				ToastUtil.show(getString(R.string.already_logout));
+			}
+		};
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.account_fragment, container, false);
+		jiaBalanceTextView = (TextView) view.findViewById(R.id.my_jiacoin_text);
+		loginLayout = (RelativeLayout) view.findViewById(R.id.account_login_layout);
+		logoutLayout = (RelativeLayout) view.findViewById(R.id.account_logout_layout);
+
+		if (Utils.Network.isHasNetwork(getActivity())) {
+			HttpClient client = HttpClient.getInstall(getActivity());
+			String url = Constants.NetWorkRequest.JIA_BALANCE_URL_028;
+			client.postAsync(url, null, jiaBalanceHttpResponseHandler);
+		} else {
+			ToastUtil.show(getActivity(), getString(R.string.msg_network_fail), ToastUtil.LENGTH_SHORT);
+		}
+
+		Boolean isLogin = Utils.Preference.getBooleanPref(getActivity(), "app_login_flag", false);
+		if (!isLogin) {
+			loginLayout.setVisibility(View.VISIBLE);
+			logoutLayout.setVisibility(View.GONE);
+		} else {
+			loginLayout.setVisibility(View.GONE);
+			logoutLayout.setVisibility(View.VISIBLE);
+		}
+
+		loginLayout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Boolean isLogin = Utils.Preference.getBooleanPref(getActivity(), "app_login_flag", false);
+				if (!isLogin) {
+					((BaseActivity) getActivity()).gotoLogin();
+				}
+			}
+
+		});
+
+		logoutLayout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				builder.setTitle(getString(R.string.logout));
+				builder.setMessage(getString(R.string.logout_message));
+
+				builder.setPositiveButton(getString(R.string.btn_positive), new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface mDialogInterface, int which) {
+						if (Utils.Network.isHasNetwork(getActivity())) {
+							String url = Constants.NetWorkRequest.LOGIN_OUT_URL_007;
+							if (client == null) {
+								client = HttpClient.getInstall(getActivity());
+							}
+							client.postAsync(url, null, logOutJsonHttpResponseHandler);
+
+						} else {
+							ToastUtil.show(getActivity(), getString(R.string.msg_network_fail), ToastUtil.LENGTH_SHORT);
+						}
+					}
+				});
+				builder.setNegativeButton(getString(R.string.btn_negative), new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface mDialogInterface, int which) {
+						if (alertDialog != null) {
+							alertDialog.dismiss();
+						}
+					}
+				});
+				alertDialog = builder.create();
+				alertDialog.show();
+			}
+		});
+
+		orderListLayout = (RelativeLayout) view.findViewById(R.id.order_list);
+		orderListLayout.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Boolean isLogin = Utils.Preference.getBooleanPref(getActivity(), "app_login_flag", false);
+				if (!isLogin) {
+					((BaseActivity) getActivity()).gotoLogin();
+				} else {
+					Intent intent = new Intent(v.getContext(), OrderListActivity.class);
+					intent.setAction("service_list");
+					intent.putExtra("order_list_type", Constants.AccountFragment.ORDER_LIST);
+					startActivity(intent);
+				}
+			}
+		});
+
+		amListRL = (RelativeLayout) view.findViewById(R.id.book_list);
+		amListRL.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				Boolean isLogin = Utils.Preference.getBooleanPref(getActivity(), "app_login_flag", false);
+				if (!isLogin) {
+					((BaseActivity) getActivity()).gotoLogin();
+				} else {
+					Intent intent = new Intent(v.getContext(), OrderListActivity.class);
+					intent.setAction("book_list");
+					intent.putExtra("order_list_type", Constants.AccountFragment.BOOK_LIST);
+					startActivity(intent);
+				}
+			}
+		});
+
+		addressManagementLayout = (RelativeLayout) view.findViewById(R.id.account_address_management);
+		addressManagementLayout.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Boolean isLogin = Utils.Preference.getBooleanPref(getActivity(), "app_login_flag", false);
+				if (!isLogin) {
+					((BaseActivity) getActivity()).gotoLogin();
+				} else {
+					Intent intent = new Intent(v.getContext(), AddressManagementActivity.class);
+					startActivity(intent);
+				}
+			}
+		});
+
+		myCouponsLayout = (RelativeLayout) view.findViewById(R.id.mycoupons_layout);
+		myCouponsLayout.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Boolean isLogin = Utils.Preference.getBooleanPref(getActivity(), "app_login_flag", false);
+				if (!isLogin) {
+					((BaseActivity) getActivity()).gotoLogin();
+				} else {
+					Intent intent = new Intent(v.getContext(), OrderListActivity.class);
+					intent.setAction("coupon_list");
+					startActivity(intent);
+				}
+			}
+		});
+
+		// TextView viewhello = (TextView) view.findViewById(R.id.tv_hello);
+		// viewhello.setText(extraParam);
+		return view;
+
+	}
+
+	private Map<String, String> getUserMap() {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("USER_ID", null);
+		map.put("USER_STATE", null);
+		map.put("USER_AREAID", null);
+		map.put("USER_REMARK", null);
+		map.put("USER_NICKNAME", null);
+		map.put("USER_EMAIL", null);
+		map.put("USER_USERNAME", null);
+		map.put("USER_MOBILE", null);
+		return map;
+	}
+
+}

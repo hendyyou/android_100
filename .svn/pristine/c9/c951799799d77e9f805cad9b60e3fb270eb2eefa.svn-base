@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:paddingTop="@dimen/layout_padding"
+	android:paddingBottom="@dimen/layout_padding"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<LinearLayout
+		android:id="@+id/ll_order_pay_go_to_pay"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:background="@drawable/order_bottom_bg"
+		android:padding="10.0dip">
+
+		<Button
+			android:id="@+id/btn_order_pay_go_to_pay"
+			style="@style/Widget.Button.Main"
+			android:text="@string/go_to_pay" />
+	</LinearLayout>
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<LinearLayout
+			android:paddingLeft="@dimen/layout_padding"
+			android:paddingRight="@dimen/layout_padding"
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<LinearLayout
+				android:id="@+id/ll_order_pay_info_panel"
+				android:orientation="vertical"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/layout_padding">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/label_margin"
+					android:layout_marginRight="@dimen/label_margin"
+					android:text="@string/order_pay_info_prompt"
+					style="@style/TextAppearance.Notice.Gray" />
+
+				<TextView
+					android:id="@+id/tv_order_pay_info_order_no"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/label_margin"
+					android:layout_marginRight="@dimen/label_margin"
+					android:text="@string/input_validate_code_prompt"
+					style="@style/TextAppearance.Notice.Gray" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/order_pay_coupon_panel"
+				android:orientation="vertical"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/view_pager_page_margin">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/label_margin"
+					android:layout_marginRight="@dimen/label_margin"
+					android:text="@string/order_pay_coupon_prompt"
+					style="@style/TextAppearance.Notice.Gray" />
+
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content">
+
+					<EditText
+						android:id="@+id/ev_order_pay_coupon"
+						android:layout_width="0.0dip"
+						android:hint="@string/order_pay_coupon_hint"
+						android:layout_marginRight="@dimen/button_padding"
+						android:layout_weight="1.0"
+						android:singleLine="true"
+						android:maxLength="16"
+						android:inputType="text"
+						android:imeOptions="actionNext"
+						style="@style/Widget.EditText" />
+
+					<Button
+						android:id="@+id/btn_order_pay_coupon"
+						android:layout_width="0.0dip"
+						android:text="@string/order_pay_coupon_btn_use"
+						android:layout_weight="1.0"
+						style="@style/Widget.Button.Main" />
+				</LinearLayout>
+
+				<TextView
+					android:id="@+id/tv_order_pay_coupon_used"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/label_margin"
+					android:layout_marginRight="@dimen/label_margin"
+					android:layout_marginTop="@dimen/layout_margin_top"
+					android:text="@string/order_pay_coupon_used"
+					style="@style/TextAppearance.Notice.Gray" />
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/ll_order_pay_jia_coin_panel"
+				android:orientation="vertical"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/view_pager_page_margin">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/label_margin"
+					android:layout_marginRight="@dimen/label_margin"
+					android:text="@string/order_pay_jia_coin_prompt"
+					style="@style/TextAppearance.Notice.Gray" />
+
+				<LinearLayout
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content">
+
+					<EditText
+						android:id="@+id/ev_order_pay_jia_coin"
+						android:layout_width="0.0dip"
+						android:hint="@string/order_pay_jia_coin_hint"
+						android:layout_marginRight="@dimen/button_padding"
+						android:layout_weight="1.0"
+						android:singleLine="true"
+						android:maxLength="8"
+						android:inputType="number"
+						android:imeOptions="actionNext"
+						style="@style/Widget.EditText" />
+
+					<Button
+						android:id="@+id/btn_order_pay_jia_coin"
+						android:layout_width="0.0dip"
+						android:text="@string/order_pay_jia_coin_btn_use"
+						android:layout_weight="1.0"
+						style="@style/Widget.Button.Main" />
+				</LinearLayout>
+
+				<LinearLayout
+					android:orientation="vertical"
+					android:layout_marginLeft="@dimen/label_margin"
+					android:layout_marginRight="@dimen/label_margin"
+					android:layout_marginTop="@dimen/layout_margin_top"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content">
+
+					<TextView
+						android:id="@+id/tv_order_pay_jia_coin_remain"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/order_pay_jia_coin_remain"
+						style="@style/TextAppearance.Notice.Gray" />
+
+					<TextView
+						android:id="@+id/tv_order_pay_jia_coin_used"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="@string/order_pay_jia_coin_used"
+						style="@style/TextAppearance.Notice.Gray" />
+				</LinearLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/ll_order_pay_fee_panel"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="@dimen/view_pager_page_margin">
+
+				<TextView
+					android:id="@+id/tv_order_pay_fee_prompt"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginLeft="@dimen/label_margin"
+					android:layout_marginRight="@dimen/label_margin"
+					android:text="@string/order_pay_fee_prompt"
+					android:textSize="@dimen/text_size_large"
+					style="@style/TextAppearance.List.Primary" />
+
+				<TextView
+					android:id="@+id/tv_order_pay_fee"
+					style="@style/TextAppearance.List.Primary"
+					android:layout_width="0.0dip"
+					android:layout_height="wrap_content"
+					android:layout_weight="1.0"
+					android:layout_gravity="center"
+					android:text="@string/money_format"
+					android:textSize="@dimen/text_size_large" />
+			</LinearLayout>
+
+		</LinearLayout>
+	</ScrollView>
+
+</RelativeLayout>

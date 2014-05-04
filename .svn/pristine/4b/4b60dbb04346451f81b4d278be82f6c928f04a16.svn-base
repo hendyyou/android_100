@@ -1,0 +1,114 @@
+package cn.digione.yibaic.shop.adapter;
+
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+import cn.digione.yibaic.shop.bean.BookBean;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: youzh
+ * Date: 2014/3/28
+ * Time: 16:34
+ */
+public class AppointmentAdapter extends BaseAdapter {
+    private BaseActivity mContext;
+    private List<BookBean> mDatas;
+    private LayoutInflater mInflater;
+    private ImageLoadingListener mImageLoadingListener;
+
+    public AppointmentAdapter(BaseActivity context, List<BookBean> datas) {
+        mContext = context;
+        mDatas = datas;
+        mInflater = context.getLayoutInflater();
+        this.mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+    }
+
+    @Override
+    public int getCount() {
+        return mDatas.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mDatas.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View view, ViewGroup parent) {
+        ViewHolder holder = null;
+        if (holder == null) {
+            holder = new ViewHolder();
+            view = mInflater.inflate(R.layout.book_list_item, null);
+            holder.rbBtn = (Button) view.findViewById(R.id.btn_appointment_buy);
+            holder.productPicIV = (ImageView) view.findViewById(R.id.iv_appointment_image);
+            holder.amNameTV = (TextView) view.findViewById(R.id.tv_appointment_name);
+            holder.amTimeTV = (TextView) view.findViewById(R.id.tv_appointment_time);
+            holder.amProducTV = (TextView) view.findViewById(R.id.tv_appointment_product);
+            holder.rbstarttimeTV = (TextView) view.findViewById(R.id.tv_appointment_rbstarttime);
+            holder.rbendtimeTV = (TextView) view.findViewById(R.id.tv_appointment_rbendtime);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
+        BookBean bookBean = mDatas.get(position);
+        if (bookBean != null) {
+          //  ProductColorBean colorBean = bookBean.getProductVO();
+            //BookBean appointmentBean = bookBean.getAppointmentVO();
+
+          /*  String proName = colorBean.getProName() == null ? "" : colorBean.getProName();
+            String proVersionl = colorBean.getProVersion() == null ? "" : colorBean.getProVersion();
+            String proRom = colorBean.getProRom() == null ? "" : colorBean.getProRom();
+            String proColor = colorBean.getProColor() == null ? "" : colorBean.getProColor();
+            String pro = proName + " " + proVersionl + "" + proRom + " " + proColor;
+
+            String amProduct = String.format(mContext.getString(R.string.appointment_product), pro);  */
+            String amName = String.format(mContext.getString(R.string.appointment_name), bookBean.getAmName());
+            String amTime = String.format(mContext.getString(R.string.appointment_time), bookBean.getAmTime());
+            String rbStarttime = String.format(mContext.getString(R.string.appointment_rbtime),
+                                               bookBean.getRbStarttime());
+
+            //holder.amProducTV.setText(amProduct);
+            holder.amNameTV.setText(amName);
+            holder.amTimeTV.setText(amTime);
+            holder.rbstarttimeTV.setText(rbStarttime);
+
+            String productPic = bookBean.getProPic();
+            if (!TextUtils.isEmpty(productPic)) {
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                holder.productPicIV.setImageDrawable(null);
+                imageLoader.displayImage(productPic, holder.productPicIV, mImageLoadingListener);
+            } else {
+                holder.productPicIV.setImageResource(R.drawable.no_picture);
+            }
+        }
+        return view;
+    }
+
+    public static class ViewHolder {
+        Button rbBtn;
+        ImageView productPicIV;
+        TextView amTimeTV;
+        TextView amNameTV;
+        TextView amProducTV;
+        TextView rbstarttimeTV;
+        TextView rbendtimeTV;
+    }
+}

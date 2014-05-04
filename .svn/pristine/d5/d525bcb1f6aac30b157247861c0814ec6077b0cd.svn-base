@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:paddingBottom="@dimen/home_cellspacing"
+	android:background="@drawable/product_item_bg"
+	android:id="@+id/rl_shopping_cart_item_container"
+	style="@style/Widget.Item.ListView.DoubleLine">
+
+	<include
+		android:id="@+id/in_action_divider"
+		android:layout_alignParentTop="true"
+		layout="@layout/horizontal_divider" />
+
+	<ImageView
+		android:id="@+id/iv_shopping_cart_list_pic"
+		android:focusable="false"
+		android:clickable="false"
+		android:padding="5dip"
+		android:layout_width="@dimen/image_width"
+		android:layout_height="@dimen/image_width"
+		android:scaleType="fitXY"
+		android:layout_alignParentLeft="true"
+		android:layout_centerVertical="true" />
+
+	<LinearLayout
+		android:orientation="vertical"
+		android:id="@+id/ll_ordersubmit_text_center"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="20.0dip"
+		android:layout_toLeftOf="@id/iv_arrow_right"
+		android:layout_toRightOf="@id/iv_shopping_cart_list_pic"
+		android:layout_centerVertical="true">
+
+		<TextView
+			android:textSize="@dimen/text_size_medium"
+			android:ellipsize="end"
+			android:id="@+id/tv_shopping_cartlist_text_title"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			style="@style/TextAppearance.List.Primary" />
+
+		<TextView
+			android:textSize="@dimen/text_size_normal"
+			android:id="@+id/tv_shopping_cartlist_text_center"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			style="@style/TextAppearance.Normal.Gray" />
+	</LinearLayout>
+
+	<ImageView
+		android:id="@+id/iv_arrow_right"
+		android:focusable="false"
+		android:clickable="false"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:src="@drawable/btn_next"
+		android:scaleType="centerInside"
+		android:layout_alignParentRight="true"
+		android:layout_centerVertical="true" />
+</RelativeLayout>

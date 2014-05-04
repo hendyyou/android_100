@@ -1,0 +1,206 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.ShopApp;
+import cn.digione.yibaic.shop.adapter.OrderListAdapter;
+import cn.digione.yibaic.shop.adapter.OrderProductListAdapter;
+import cn.digione.yibaic.shop.bean.JsonNoneOutBean;
+import cn.digione.yibaic.shop.bean.OrderDetailBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+
+/**
+ * 订单详情界面
+ * 
+ * @author Administrator
+ * 
+ */
+public class OrderDetailFragment extends Fragment {
+
+	private static final String TAG = "orderDetailFragment";
+	private String mAction;
+	private OrderListAdapter mAdapter;
+	private android.widget.AdapterView.OnItemClickListener mItemClickListener;
+	private android.widget.AbsListView.OnScrollListener mOnScrollListener;
+	private TextView ordfeeTextView;
+	private View orderFeeLayout;
+	private TextView orderStatusView;
+	private TextView payFeeView;
+	private TextView orderFeeProductView; // 订单总价+优惠+运费
+	private TextView createTimeView;
+	private TextView orderNOView;
+	private TextView orderAddressView;
+	private TextView invoiceTypeView;
+	private LinearLayout orderInfoLayoutView;
+	private ListView orderProductListView;
+	private ImageView cancelOrderBtn;
+	private AlertDialog alertDialog;
+	private HttpClient client;
+	private CustomerJsonHttpResponseHandler<OrderDetailBean> orderHttpResponseHandler;
+	private CustomerJsonHttpResponseHandler<JsonNoneOutBean> cancelJsonHttpResponseHandler;
+
+	String orderId;
+	private int mType;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		orderId = getArguments().getString("orderId");
+		orderHttpResponseHandler = new CustomerJsonHttpResponseHandler<OrderDetailBean>(getActivity()) {
+
+			@Override
+			public void processCallSuccess(OrderDetailBean outBean, String msg) {
+				// TODO Auto-generated method stub
+				OrderDetailBean odtailbean = outBean;
+				ordfeeTextView.setText(getString(R.string.total_price) + getString(R.string.order_list_rmb)
+						+ Utils.Money.MoneyToYuan(odtailbean.getOrderAmount()));
+				orderStatusView.setText(getString(R.string.order_status) + odtailbean.getOrderStatusName());
+				payFeeView.setText(getString(R.string.order_submit_amount_title) + getString(R.string.order_list_rmb)
+						+ Utils.Money.MoneyToYuan(odtailbean.getOrderAmount()));
+
+				String product_price = getString(R.string.product_total_price);
+				orderFeeProductView.setText(String.format(product_price,
+						Utils.Money.MoneyToYuan(odtailbean.getProductPriceAmt()),
+						Utils.Money.MoneyToYuan(odtailbean.getTransCost())));
+
+				createTimeView.setText(odtailbean.getOrderTime());
+				orderNOView.setText(odtailbean.getOrderNo());
+				orderAddressView.setText(odtailbean.getConsigneeAddress() + " " + odtailbean.getConsignee());
+				invoiceTypeView.setText(odtailbean.getInvoiceTypeName());
+				orderFeeLayout.setVisibility(View.VISIBLE);
+
+				orderProductListView.setAdapter(new OrderProductListAdapter(getActivity(), odtailbean.getOrderItemVOs()));
+				orderInfoLayoutView.setVisibility(View.VISIBLE);
+				if (odtailbean.getCanCancel() == 1) {
+					cancelOrderBtn.setVisibility(View.VISIBLE);
+				} else {
+					cancelOrderBtn.setVisibility(View.GONE);
+				}
+				ShopApp.setListViewHeightBasedOnChildren(orderProductListView);
+
+			}
+		};
+
+		cancelJsonHttpResponseHandler = new CustomerJsonHttpResponseHandler<JsonNoneOutBean>(getActivity()) {
+
+			@Override
+			public void processCallSuccess(JsonNoneOutBean outBean, String msg) {
+				// TODO Auto-generated method stub
+				ToastUtil.show(msg);
+				FragmentManager fManager = getActivity().getSupportFragmentManager();
+				FragmentTransaction ft = fManager.beginTransaction();
+				fManager.popBackStack();
+				ft.commit();
+			}
+		};
+	}
+
+	public View onCreateView(LayoutInflater layoutinflater, ViewGroup viewgroup, Bundle bundle) {
+
+		View view = layoutinflater.inflate(R.layout.order_detail_fragment, viewgroup, false);
+		ordfeeTextView = (TextView) view.findViewById(R.id.order_fee_bottom);
+		// 订单总价
+		orderFeeLayout = view.findViewById(R.id.order_fee_layout);
+
+		orderInfoLayoutView = (LinearLayout) view.findViewById(R.id.order_info_layout);
+
+		orderStatusView = (TextView) view.findViewById(R.id.detail_order_status); // 订单状态
+
+		payFeeView = (TextView) view.findViewById(R.id.pay_fee);// 应付总额
+
+		createTimeView = (TextView) view.findViewById(R.id.create_time);// 创建时间
+
+		orderNOView = (TextView) view.findViewById(R.id.order_NO); // 订单编号
+
+		orderAddressView = (TextView) view.findViewById(R.id.order_address); // 收货地址
+
+		invoiceTypeView = (TextView) view.findViewById(R.id.invoice_type); // 发票类型
+
+		orderProductListView = (ListView) view.findViewById(R.id.order_product_list); // 订单中的产品
+
+		orderFeeProductView = (TextView) view.findViewById(R.id.order_fee_product); // 价格、优惠、运费
+
+		cancelOrderBtn = (ImageView) view.findViewById(R.id.cancel_btn);
+
+		if (Utils.Network.isHasNetwork(getActivity())) {
+			String url = Constants.NetWorkRequest.QUERY_ORDER_DETAIL_025.replace("$id", orderId);
+
+			if (client == null) {
+				client = HttpClient.getInstall(getActivity());
+			}
+
+			client.postAsync(url, null, orderHttpResponseHandler);
+		} else {
+			ToastUtil.show(getActivity(), getString(R.string.msg_network_fail), ToastUtil.LENGTH_SHORT);
+		}
+
+		cancelOrderBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+				builder.setTitle(getString(R.string.cancel_order));
+				builder.setMessage(getString(R.string.confirm_cancel));
+				builder.setPositiveButton(getString(R.string.yes_string), new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface mDialogInterface, int which) {
+						if (Utils.Network.isHasNetwork(getActivity())) {
+
+							String url = Constants.NetWorkRequest.ORDER_CANCEL_URL_026.replace("$id", orderId);
+							if (client == null) {
+								client = HttpClient.getInstall(getActivity());
+							}
+
+							client.postAsync(url, null, cancelJsonHttpResponseHandler);
+						} else {
+							ToastUtil.show(getActivity(), getString(R.string.msg_network_fail), ToastUtil.LENGTH_SHORT);
+						}
+					}
+				});
+				builder.setNegativeButton(getString(R.string.no_string), new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface mDialogInterface, int which) {
+						if (alertDialog != null) {
+							alertDialog.dismiss();
+						}
+					}
+				});
+				alertDialog = builder.create();
+				alertDialog.show();
+			}
+		});
+
+		return view;
+
+	}
+
+	public void setAction(String s) {
+		mAction = s;
+	}
+
+	public void setType(int s) {
+		mType = s;
+	}
+
+}

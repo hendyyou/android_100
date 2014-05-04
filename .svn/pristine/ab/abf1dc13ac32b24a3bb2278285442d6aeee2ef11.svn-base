@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/address_listview"
+        style="@style/Widget.ListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/add_address_layout"
+        style="@style/Widget.Item.ListView.SingleLine"
+        android:layout_margin="@dimen/list_item_padding"
+        android:background="@drawable/list_item_single_bg_top_margin"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/add_address_btn"
+            style="@style/TextAppearance.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:shadowColor="@color/primary_text_color_shadow"
+            android:text="@string/checkout_button_add_address" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="3.0dip"
+            android:clickable="false"
+            android:focusable="false"
+            android:src="@drawable/btn_next" />
+    </RelativeLayout>
+
+</LinearLayout>

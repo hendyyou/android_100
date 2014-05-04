@@ -1,0 +1,43 @@
+package cn.digione.yibaic.shop.bean;
+
+public class HomeBean {
+	private String model;
+	private String indexUrl;
+	/**
+	 * 是否购买（1为购买,2为售罄，0为预约）
+	 * @return
+	 */
+	private int sellType;
+	/**
+	 * 专题页对应的产品型号
+	 * @return
+	 */
+	public String getModel() {
+		return model;
+	}
+	public void setModel(String model) {
+		this.model = model;
+	}
+	/**
+	 * 专题页的页面地址
+	 * @return
+	 */
+	public String getIndexUrl() {
+		return indexUrl;
+	}
+	public void setIndexUrl(String indexUrl) {
+		this.indexUrl = indexUrl;
+	}
+	/**
+	 * 是否购买（1为购买,2为售罄，0为预约）
+	 * @return
+	 */
+	public int getSellType() {
+		return sellType;
+	}
+	public void setSellType(int sellType) {
+		this.sellType = sellType;
+	}
+	
+	
+}

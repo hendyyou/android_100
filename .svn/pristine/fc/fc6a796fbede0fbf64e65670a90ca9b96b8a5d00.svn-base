@@ -1,0 +1,184 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.ShoppingActivity;
+import cn.digione.yibaic.shop.adapter.ShoppingCartItemAdapter;
+import cn.digione.yibaic.shop.bean.ShoppingCartBean;
+import cn.digione.yibaic.shop.bean.ShoppingCartItemBean;
+import cn.digione.yibaic.shop.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: youzh
+ * Date: 14-3-11
+ * Time: 上午10:33
+ */
+public class ShoppingFragment extends BaseFragment {
+    private ShoppingCartItemAdapter mShoppingCartItemAdapter;
+    //private List<ProductBean> datas = null;
+    private ShoppingCartBean mShoppingCartBean;
+    private List<ShoppingCartItemBean> cartItemBeans;
+    private ListView cartListLV;
+    private TextView totalPriceTV;
+    private Button nextBtn;
+    private LinearLayout shoppingCartEmptyLL;
+    private FrameLayout shoppingcartItemFLContainter;
+    //private  ShoppingFragment newFragment;
+    // private CheckoutFragment mCheckoutFragment;
+
+    private EditCartItemFragment.EidtCartItemCount eidtCartItemCount = new EditCartItemFragment.EidtCartItemCount() {
+
+        @Override
+        public void changeCount(int count, int position) {
+            Log.d("mShoppingCartBean = " + mShoppingCartBean + ",mShoppingCartItemAdapter=" + mShoppingCartItemAdapter);
+            if (mShoppingCartBean != null && mShoppingCartItemAdapter != null) {
+                List<ShoppingCartItemBean> tmpDatas = mShoppingCartBean.getItemDatas();
+                ShoppingCartItemBean tmpBean = tmpDatas.get(position);
+                tmpDatas.remove(position);
+                tmpBean.setCount(count);
+                tmpDatas.add(position, tmpBean);
+                mShoppingCartBean.setItemDatas(tmpDatas);
+                mShoppingCartItemAdapter.notifyDataSetChanged();
+            }
+        }
+    };
+
+    /*public static ShoppingFragment newInstance(String s) {
+        newFragment = new ShoppingFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("extraParam", s);
+        newFragment.setArguments(bundle);
+        return newFragment;
+    }
+
+    public static ShoppingFragment getShoppingFragment() {
+        if (newFragment == null) {
+            newInstance("shopping_cart");
+        }
+        return newFragment;
+    }*/
+
+    public ShoppingActivity getParent() {
+        return (ShoppingActivity) getActivity();
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EditCartItemFragment.setEidtCartItemCount(eidtCartItemCount);
+        Log.d("ShoppingFragment-----onCreate");
+        //mCheckoutFragment = new CheckoutFragment();
+        mShoppingCartBean = new ShoppingCartBean();
+        mShoppingCartBean.setTotalPrice(58.99);
+        double totalPrice = 0.0;
+
+        ShoppingCartItemBean bean1 = new ShoppingCartItemBean();
+        bean1.setCount(1);
+        bean1.setProductName("100A V5");
+        bean1.setPrice(896.6);
+        totalPrice = bean1.getCount() * bean1.getPrice();
+        bean1.setSubTotalPrice(bean1.getCount() * bean1.getPrice());
+
+        ShoppingCartItemBean bean2 = new ShoppingCartItemBean();
+        bean2.setCount(2);
+        bean2.setProductName("100B V5");
+        bean2.setPrice(500);
+        totalPrice += bean2.getCount() * bean2.getPrice();
+        bean2.setSubTotalPrice(bean2.getCount() * bean2.getPrice());
+
+
+        ShoppingCartItemBean bean3 = new ShoppingCartItemBean();
+        bean3.setCount(1);
+        bean3.setProductName("100C V5");
+        bean3.setPrice(896.6);
+        totalPrice += bean3.getCount() * bean3.getPrice();
+        bean3.setSubTotalPrice(bean3.getCount() * bean3.getPrice());
+
+        ShoppingCartItemBean bean4 = new ShoppingCartItemBean();
+        bean4.setCount(3);
+        bean4.setProductName("100A V5");
+        bean4.setPrice(896.6);
+        bean4.setSubTotalPrice(bean4.getCount() * bean4.getPrice());
+
+        ShoppingCartItemBean bean5 = new ShoppingCartItemBean();
+        bean5.setCount(2);
+        bean5.setProductName("100A V5");
+        bean5.setPrice(896.6);
+        bean5.setSubTotalPrice(bean5.getCount() * bean5.getPrice());
+        cartItemBeans = new ArrayList<ShoppingCartItemBean>();
+        cartItemBeans.add(bean1);
+        cartItemBeans.add(bean2);
+        cartItemBeans.add(bean3);
+        //itemDatas.add(bean4);
+        // itemDatas.add(bean5);
+        mShoppingCartBean.setTotalPrice(totalPrice);
+        mShoppingCartBean.setItemDatas(cartItemBeans);
+        cartItemBeans = mShoppingCartBean.getItemDatas();
+        mShoppingCartItemAdapter = new ShoppingCartItemAdapter(getParent(), mShoppingCartBean.getItemDatas());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.shopping_fragment, container, false);
+        cartListLV = (ListView) view.findViewById(R.id.lv_shopping_order_list);
+        cartListLV.setAdapter(mShoppingCartItemAdapter);
+        shoppingCartEmptyLL = (LinearLayout) view.findViewById(R.id.ll_shopping_cart_empty);
+        shoppingcartItemFLContainter = (FrameLayout) view.findViewById(R.id.fl_shopiing_cart_item_container);
+        totalPriceTV = (TextView) view.findViewById(R.id.tv_total_price);
+        nextBtn = (Button) view.findViewById(R.id.btn_next);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.ll_shopping_cart_fragment_container, mCheckoutFragment, "checkout_fragment");
+                transaction.addToBackStack("checkout_fragemt");
+                transaction.commit();*/
+                Bundle bundle = new Bundle();
+                getParent().showFragment("checkout_fragment", bundle, true);
+            }
+        });
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String totalPriceStr = getString(R.string.total_shopping_cart_price);
+        totalPriceTV.setText(String.format(totalPriceStr, mShoppingCartBean.getTotalPrice()));
+
+        if (mShoppingCartBean != null && cartItemBeans != null && cartItemBeans.size() > 0) {
+            shoppingCartEmptyLL.setVisibility(View.GONE);
+            shoppingcartItemFLContainter.setVisibility(View.VISIBLE);
+        } else {
+            shoppingcartItemFLContainter.setVisibility(View.GONE);
+            shoppingCartEmptyLL.setVisibility(View.VISIBLE);
+        }
+        Log.d("ShoppingFragment-----onResume");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mShoppingCartItemAdapter = null;
+        mShoppingCartBean = null;
+        cartItemBeans = null;
+        cartListLV = null;
+        totalPriceTV = null;
+        nextBtn = null;
+        shoppingCartEmptyLL = null;
+        shoppingcartItemFLContainter = null;
+        //newFragment = null;
+        //mCheckoutFragment = null;
+    }
+}

@@ -1,0 +1,109 @@
+package cn.digione.yibaic.shop.bean;
+
+/**
+ * 订单详情中的产品列表
+ * 
+ * 
+ */
+public class OrderProductBean {
+	/**
+	 * 产品图片
+	 */
+	private String proPic;
+	/**
+	 * 产品标题
+	 */
+	private String productName;
+	/**
+	 * 单价
+	 */
+	private int currentPrice;
+	/**
+	 * 数量
+	 */
+	private int quantity;
+
+	/**
+	 * 型号
+	 */
+	private String proModel;
+
+	/**
+	 * rom大小
+	 */
+	private String proRom;
+
+	/**
+	 * 制式
+	 */
+	private String proStandardName;
+
+	/**
+	 * 颜色
+	 */
+	private String colorName;
+
+	public String getProPic() {
+		return proPic;
+	}
+
+	public void setProPic(String proPic) {
+		this.proPic = proPic;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public int getCurrentPrice() {
+		return currentPrice;
+	}
+
+	public void setCurrentPrice(int currentPrice) {
+		this.currentPrice = currentPrice;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getProModel() {
+		return proModel;
+	}
+
+	public void setProModel(String proModel) {
+		this.proModel = proModel;
+	}
+
+	public String getProRom() {
+		return proRom;
+	}
+
+	public void setProRom(String proRom) {
+		this.proRom = proRom;
+	}
+
+	public String getProStandardName() {
+		return proStandardName;
+	}
+
+	public void setProStandardName(String proStandardName) {
+		this.proStandardName = proStandardName;
+	}
+
+	public String getColorName() {
+		return colorName;
+	}
+
+	public void setColorName(String colorName) {
+		this.colorName = colorName;
+	}
+}

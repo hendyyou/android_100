@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@color/white">
+
+<ScrollView
+	    android:id="@+id/sv_checkout_container"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    style="@style/Widget.ScrollView">
+        <LinearLayout
+	        android:orientation="vertical"
+	        android:id="@+id/ll_checkout_info_container"
+
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content">
+            <LinearLayout
+	            android:orientation="vertical"
+	            android:id="@+id/ll_checkout_hint_container"
+	            android:layout_width="fill_parent"
+	            android:visibility="gone"
+	            android:layout_height="wrap_content">
+                <TextView
+	                android:textColor="@color/button_background_color"
+	                android:text="@string/checkout_form_hint"
+	                style="@style/Widget.Item.ListView.Label" />
+                <TextView
+	                android:textSize="@dimen/text_size_medium"
+	                android:gravity="center_vertical"
+	                android:id="@+id/tv_checkout_hint"
+	                android:background="@drawable/list_item_single_bg"
+	                android:padding="10.0dip"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:text="@string/checkout_form_hint" />
+            </LinearLayout>
+            <TextView
+	            android:text="@string/checkout_form_address_titie"
+	            style="@style/Widget.Item.ListView.Label" />
+            <RelativeLayout
+				android:layout_gravity="center"
+	            android:id="@+id/rl_checkout_address_empty"
+				android:layout_height="@dimen/empty_address_height"
+	            android:background="@drawable/list_item_single_bg_n"
+	            style="@style/Widget.Item.ListView.SingleLine">
+                <TextView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/checkout_button_add_address"
+	                android:layout_alignParentLeft="true"
+	                android:layout_centerVertical="true"
+	                style="@style/TextAppearance.Medium" />
+                <ImageView
+	                android:focusable="false"
+	                android:clickable="false"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/btn_next"
+	                android:scaleType="centerInside"
+	                android:layout_alignParentRight="true"
+	                android:layout_centerVertical="true" />
+            </RelativeLayout>
+            <RelativeLayout
+	            android:id="@+id/rl_checkout_address"
+	            android:background="@drawable/list_item_single_bg"
+	            android:paddingTop="10.0dip"
+	            android:paddingBottom="10.0dip"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            style="@style/Widget.Item.ListView.TrebleLine">
+                <LinearLayout
+	                android:orientation="vertical"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_toLeftOf="@+id/iv_address_right_arrow"
+	                android:layout_alignParentLeft="true">
+                    <TextView
+	                    android:textSize="@dimen/text_size_medium"
+	                    android:id="@+id/tv_checkout_address_up"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content" />
+                    <TextView
+	                    android:textSize="@dimen/text_size_medium"
+	                    android:id="@+id/tv_checkout_address_middle"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content" />
+                    <TextView
+	                    android:textSize="@dimen/text_size_medium"
+	                    android:id="@+id/tv_checkout_address_bottom"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content" />
+                </LinearLayout>
+                <ImageView
+	                android:id="@+id/iv_address_right_arrow"
+	                android:focusable="false"
+	                android:clickable="false"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/btn_next"
+	                android:scaleType="centerInside"
+	                android:layout_alignParentRight="true"
+	                android:layout_centerVertical="true" />
+            </RelativeLayout>
+            <LinearLayout
+	            android:orientation="vertical"
+	            android:id="@+id/ll_checkout_addr_layout"
+	            android:visibility="gone"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content">
+                <EditText
+	                android:id="@+id/et_checkout_addr"
+	                android:focusable="false"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:inputType="none"
+	                style="@style/Widget.EditText" />
+                <EditText
+	                android:id="@+id/et_checkout_addr_consignee"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginTop="@dimen/list_item_padding"
+	                android:hint="@string/hint_address_consignee"
+	                android:maxLength="15"
+	                style="@style/Widget.EditText" />
+                <EditText
+	                android:id="@+id/et_checkout_addr_tel"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginTop="@dimen/list_item_padding"
+	                android:hint="@string/hint_address_tel"
+	                android:maxLength="11"
+	                android:inputType="phone"
+	                style="@style/Widget.EditText" />
+            </LinearLayout>
+            <LinearLayout
+	            android:orientation="vertical"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent">
+                <TextView
+	                android:text="@string/checkout_form_payment_title"
+					android:visibility="gone"
+	                style="@style/Widget.Item.ListView.Label" />
+                <RadioGroup
+	                android:id="@+id/rg_checkout_form_radiogroup_payment"
+	                android:layout_width="fill_parent"
+					android:visibility="gone"
+	                android:layout_height="wrap_content" />
+                <TextView
+	                android:text="@string/checkout_form_shipment_title"
+					android:visibility="gone"
+	                style="@style/Widget.Item.ListView.Label" />
+                <RadioGroup
+	                android:id="@+id/rg_checkout_form_radiogroup_shipment"
+					android:visibility="gone"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+	            android:orientation="vertical"
+	            android:id="@+id/ll_checkout_form_delivertime"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent">
+                <TextView
+	                android:text="@string/checkout_form_deliver_time_title"
+	                style="@style/Widget.Item.ListView.Label" />
+                <RadioGroup
+	                android:id="@+id/rg_checkout_form_radiogroup_delivertime"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+	            android:orientation="vertical"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent">
+                <TextView
+	                android:text="@string/checkout_form_invoice_title"
+	                style="@style/Widget.Item.ListView.Label" />
+                <RadioGroup
+	                android:id="@+id/rg_checkout_form_radiogroup_invoice"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content" />
+                <LinearLayout
+	                android:gravity="center_vertical"
+	                android:id="@+id/ll_checkout_form_invoice_title_bg"
+	                android:background="@drawable/radiobutton_bottom_invoice_p"
+	                android:visibility="gone"
+	                android:layout_width="fill_parent"
+					android:orientation="vertical"
+	                android:layout_height="wrap_content">
+                    <EditText
+	                    android:id="@+id/et_checkout_form_invoice_title"
+	                    android:layout_width="fill_parent"
+	                    android:layout_height="wrap_content"
+	                    android:hint="@string/input_invoice_title_prompt"
+	                    style="@style/Widget.EditText" />
+                </LinearLayout>
+                <TextView
+	                android:id="@+id/tv_next"
+	                android:layout_width="fill_parent"
+	                android:layout_marginTop="32.0dip"
+					android:layout_marginBottom="10.0dip"
+	                android:text="@string/checkout_next"
+	                style="@style/Widget.Button.Main" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+	<LinearLayout
+		android:id="@+id/ll_checkout_error"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="horizontal"
+		android:background="@drawable/btn_primary_bg_p"/>
+
+</FrameLayout>

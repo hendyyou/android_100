@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="list_item_height_single_line">84dip</dimen>
+	<dimen name="title_bar_height">36dip</dimen>
+	<dimen name="list_item_height_double_line">83dip</dimen>
+	<dimen name="button_width">121dip</dimen>
+	<dimen name="button_width_padping_lr">28dip</dimen>
+	<dimen name="order_submit_btn_padping_lr">21dip</dimen>
+	<dimen name="product_image_height">52dip</dimen>
+	<dimen name="edit_cart_button_height">27dip</dimen>
+	<dimen name="edit_cart_button_width">76dip</dimen>
+	<dimen name="edit_cart_button_width_padping_lr">11dip</dimen>
+	<dimen name="image_height">52dip</dimen>
+	<dimen name="image_width">52dip</dimen>
+	<dimen name="order_submit_product_item_height">68dip</dimen>
+	<dimen name="order_submit_product_pic_size">55dip</dimen>
+	<dimen name="order_submit_item_height">39dip</dimen>
+	<dimen name="edit_text_input_height">34dip</dimen>
+	<dimen name="button_height">34dip</dimen>
+	<dimen name="empty_address_height">25dip</dimen>
+</resources>

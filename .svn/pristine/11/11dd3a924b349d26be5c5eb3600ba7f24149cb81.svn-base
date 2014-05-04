@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:paddingLeft="@dimen/layout_padding"
+	android:paddingRight="@dimen/layout_padding"
+	android:paddingBottom="@dimen/layout_padding"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button
+	    android:id="@+id/btn_finish"
+	    android:layout_marginTop="@dimen/layout_margin_top"
+	    android:text="@string/completed"
+	    android:layout_alignParentBottom="true"
+	    style="@style/Widget.Button.Main" />
+    <LinearLayout
+	    android:gravity="center"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_above="@id/btn_finish">
+        <TextView
+	        android:gravity="center"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/active_email_sent_1"
+	        style="@style/TextAppearance.Notice" />
+        <TextView
+	        android:gravity="center"
+	        android:layout_gravity="center_horizontal"
+	        android:id="@+id/tv_email"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/layout_margin_top"
+	        style="@style/TextAppearance.Notice" />
+        <TextView
+	        android:gravity="center"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/layout_margin_top"
+	        android:text="@string/active_email_sent_2"
+	        style="@style/TextAppearance.Notice" />
+        <TextView
+	        android:gravity="center"
+	        android:layout_gravity="center_horizontal"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/layout_margin_top"
+	        android:text="@string/click_email"
+	        style="@style/TextAppearance.Notice" />
+    </LinearLayout>
+</RelativeLayout>

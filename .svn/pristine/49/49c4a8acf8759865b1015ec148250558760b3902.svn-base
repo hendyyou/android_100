@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/layout_padding" >
+
+    <AutoCompleteTextView
+        android:id="@+id/et_account_name"
+        style="@style/Widget.AutoCompleteTextView"
+        android:layout_width="fill_parent"
+		android:layout_height="@dimen/edit_text_input_height"
+        android:hint="@string/account_hint_text"
+        android:selectAllOnFocus="true"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/et_account_password"
+        style="@style/Widget.EditText"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="@dimen/layout_margin_top"
+        android:hint="@string/password"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:singleLine="true" />
+
+	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:id="@+id/tv_reg_new"
+			style="@style/Widget.HyperLink"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="5.0dip"
+			android:layout_marginTop="@dimen/layout_margin_top"
+			android:layout_toLeftOf="@+id/tv_forget_pwd"
+			android:text="@string/micloud_reg_new" />
+
+		<TextView
+			android:id="@+id/tv_forget_pwd"
+			style="@style/Widget.HyperLink"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentRight="true"
+			android:layout_marginTop="@dimen/layout_margin_top"
+			android:text="@string/forget_password" />
+	</RelativeLayout>
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<TextView
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+
+		<Button
+			android:id="@+id/btn_login"
+			style="@style/Widget.Button.Main"
+			android:layout_width="0dip"
+			android:layout_weight="4"
+			android:layout_marginTop="15.0dip"
+			android:text="@string/login" />
+
+		<TextView
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+	</LinearLayout>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<TextView
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+
+		<Button
+			android:id="@+id/btn_baidu_login"
+			style="@style/Widget.Button.Main"
+			android:layout_width="0dip"
+			android:layout_weight="4"
+			android:layout_marginTop="15.0dip"
+			android:text="@string/login_baidu" />
+
+		<TextView
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+	</LinearLayout>
+</LinearLayout>

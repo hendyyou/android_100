@@ -1,0 +1,148 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.ShoppingActivity;
+import cn.digione.yibaic.shop.adapter.OrderSubmitProductAdapter;
+import cn.digione.yibaic.shop.bean.JsonNoneOutBean;
+import cn.digione.yibaic.shop.bean.ShoppingCartOrderBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.common.SerializableMap;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+import cn.digione.yibaic.shop.widget.BaseAlertDialog;
+import com.loopj.android.http.RequestParams;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 14-3-13 Time: 下午5:59
+ */
+public class OrderSubmitFragment extends BaseFragment {
+    private static final int ORDER_SUBMIT_LOADER = 0;
+    private static final int TAG_BACKPRESS_MESSAGE = 1;
+
+    private TextView mCountDescrptionTV;
+    private Button mSubmitBtn;
+
+    private RelativeLayout mUseCouponRL;
+    private RelativeLayout mProductMoneyRL;
+    private RelativeLayout mShipmentRL;
+    private RelativeLayout mCouponDiscountRL;
+    private RelativeLayout mActivityDiscountRL;
+    private RelativeLayout mAmountRL;
+
+    private TextView mProductMoneyTV;
+    private TextView mShipmentTV;
+    private TextView mCouponDiscountTV;
+    private TextView mActivityDiscountTV;
+    private TextView mAmountTV;
+    private BaseAlertDialog mCheckCodeDialog;
+    private ListView mProductLV;
+    private Activity mContext;
+    private OrderSubmitProductAdapter mOrderSubProAdapter;
+
+    private ShoppingCartOrderBean mShoppingCartOrderBean = null;
+    private Map<String, String> mParemMap;
+
+    public ShoppingActivity getParent() {
+        return (ShoppingActivity) getActivity();
+    }
+
+    public void requestHttp(String url, RequestParams params) {
+        HttpClient client = HttpClient.getInstall(getParent());
+        client.postAsync(url, params, mCustomerJsonHttpResponseHandler);
+    }
+
+    private void submitOrderHttpRequest() {
+        String url = Constants.NetWorkRequest.SHOPPING_CART_ORDER_SUBMIT_URL;
+        RequestParams params = new RequestParams(mParemMap);
+        requestHttp(url, params);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mShoppingCartOrderBean = (ShoppingCartOrderBean) bundle.get("submit_order_cartobj");
+            SerializableMap serializableMap = (SerializableMap) bundle.get("submit_order_param");
+            mParemMap = serializableMap.getMap();
+        }
+
+        if (mShoppingCartOrderBean != null) {
+            mOrderSubProAdapter = new OrderSubmitProductAdapter(getParent(), mShoppingCartOrderBean.getShoppingCartVOList());
+        }
+    }
+
+    public void onActivityCreated(Bundle bundle) {
+        super.onActivityCreated(bundle);
+        mContext = getActivity();
+        mCustomerJsonHttpResponseHandler = new CustomerJsonHttpResponseHandler<JsonNoneOutBean>(getParent()) {
+            @Override
+            public void processCallSuccess(JsonNoneOutBean outBean, String msg) {
+                if (outBean != null && msg != null) {
+                    ToastUtil.show(msg);
+                }
+            }
+        };
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        getParent().setTitle(R.string.order_submit_confirm);
+        View view = inflater.inflate(R.layout.ordersubmit_fragment, container, false);
+        mCountDescrptionTV = (TextView) view.findViewById(R.id.tv_count_descrption);
+        mSubmitBtn = (Button) view.findViewById(R.id.btn_submit);
+        mProductMoneyTV = (TextView) view.findViewById(R.id.tv_product_money);
+        mShipmentTV = (TextView) view.findViewById(R.id.tv_shipment);
+        mCouponDiscountTV = (TextView) view.findViewById(R.id.tv_coupon_discount);
+        mActivityDiscountTV = (TextView) view.findViewById(R.id.tv_activity_discount);
+        mAmountTV = (TextView) view.findViewById(R.id.tv_amount);
+        mProductLV = (ListView) view.findViewById(R.id.lv_ordersubmit_product_list);
+        mProductLV.setAdapter(mOrderSubProAdapter);
+        mUseCouponRL = (RelativeLayout) view.findViewById(R.id.rl_use_coupon);
+        mUseCouponRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                getParent().showFragment("coupon_fragment", bundle, true);
+            }
+        });
+
+        mProductMoneyRL = (RelativeLayout) view.findViewById(R.id.rl_product_money_container);
+        mShipmentRL = (RelativeLayout) view.findViewById(R.id.rl_shipment_container);
+        mCouponDiscountRL = (RelativeLayout) view.findViewById(R.id.rl_coupon_discount_container);
+        mActivityDiscountRL = (RelativeLayout) view.findViewById(R.id.rl_activity_discount_container);
+        mAmountRL = (RelativeLayout) view.findViewById(R.id.rl_amount_container);
+
+        String totalPriceStr = getString(R.string.order_submit_pay);
+        mCountDescrptionTV.setText(String.format(totalPriceStr, 789.63));
+        if (mShoppingCartOrderBean != null) {
+            ImageLoadingListener mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+            String transCost = Utils.Money.MoneyToYuan(mShoppingCartOrderBean.getTransCost());
+            String orderAmount = Utils.Money.MoneyToYuan(mShoppingCartOrderBean.getOrderAmount());
+            String productPriceAmt = Utils.Money.MoneyToYuan(mShoppingCartOrderBean.getProductPriceAmt());
+            mShipmentTV.setText(transCost);
+            mAmountTV.setText(orderAmount);
+            mProductMoneyTV.setText(productPriceAmt);
+        }
+        mSubmitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitOrderHttpRequest();
+            }
+        });
+        return view;
+    }
+}

@@ -1,0 +1,130 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.io.Serializable;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 2014/3/28 Time: 16:05
+ */
+public class BookBean implements Serializable {
+    private static final long serialVersionUID = 1066991096990951520L;
+    private Integer id; // ID
+    private String amName; // 预约名称
+    private String amStarttime; // 预约开始时间
+    private String amEndtime; // 预约结束时间
+    private String saleStartTime; // 预约开始时间
+    private String saleEndTime; // 预约结束时间
+    private String amTime; // 抢购结束时间
+    /**
+     * 状态 ：1 可 抢购 2未开始 3.已售罄
+     */
+    private Integer state;
+    private String proPic;
+    private String proName;
+    private String proId;
+    private Integer isPrepaid;
+    private Integer isAppointment;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getAmName() {
+        return amName;
+    }
+
+    public void setAmName(String amName) {
+        this.amName = amName;
+    }
+
+    public String getAmStarttime() {
+        return amStarttime;
+    }
+
+    public void setAmStarttime(String amStarttime) {
+        this.amStarttime = amStarttime;
+    }
+
+    public String getAmEndtime() {
+        return amEndtime;
+    }
+
+    public void setAmEndtime(String amEndtime) {
+        this.amEndtime = amEndtime;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public String getProPic() {
+        return proPic;
+    }
+
+    public void setProPic(String proPic) {
+        this.proPic = proPic;
+    }
+
+    public String getAmTime() {
+        return amTime;
+    }
+
+    public void setAmTime(String amTime) {
+        this.amTime = amTime;
+    }
+
+    public String getProName() {
+        return proName;
+    }
+
+    public void setProName(String proName) {
+        this.proName = proName;
+    }
+
+    public String getProId() {
+        return proId;
+    }
+
+    public void setProId(String proId) {
+        this.proId = proId;
+    }
+
+    public Integer getIsPrepaid() {
+        return isPrepaid;
+    }
+
+    public void setIsPrepaid(Integer isPrepaid) {
+        this.isPrepaid = isPrepaid;
+    }
+
+    public Integer getIsAppointment() {
+        return isAppointment;
+    }
+
+    public void setIsAppointment(Integer isAppointment) {
+        this.isAppointment = isAppointment;
+    }
+
+    public String getSaleStartTime() {
+        return saleStartTime;
+    }
+
+    public void setSaleStartTime(String saleStartTime) {
+        this.saleStartTime = saleStartTime;
+    }
+
+    public String getSaleEndTime() {
+        return saleEndTime;
+    }
+
+    public void setSaleEndTime(String saleEndTime) {
+        this.saleEndTime = saleEndTime;
+    }
+}

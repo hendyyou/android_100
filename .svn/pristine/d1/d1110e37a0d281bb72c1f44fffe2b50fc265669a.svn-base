@@ -1,0 +1,257 @@
+package cn.digione.yibaic.shop.adapter;
+
+import android.content.Context;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.bean.BookBean;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+import cn.digione.yibaic.shop.http.HttpClient;
+import com.loopj.android.http.RequestParams;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 2014/3/28 Time: 16:34
+ */
+public class AppointmentAdapter extends BaseAdapter {
+    private Context mContext;
+    private List<BookBean> mDatas;
+    private LayoutInflater mInflater;
+    private BookBean bookBean;
+    private ImageLoadingListener mImageLoadingListener;
+    private BtnOnClickListener mBtnOnClickListener;
+
+    public AppointmentAdapter(Context context, List<BookBean> datas, BtnOnClickListener btnOnClickListener) {
+        mContext = context;
+        mDatas = datas;
+        mInflater = LayoutInflater.from(mContext);
+        this.mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+        mBtnOnClickListener = btnOnClickListener;
+    }
+
+    @Override
+    public int getCount() {
+        return mDatas.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mDatas.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View view, ViewGroup parent) {
+        ViewHolder holder = null;
+        if (holder == null) {
+            holder = new ViewHolder();
+            view = mInflater.inflate(R.layout.book_list_item, null);
+            holder.rbBtn = (Button) view.findViewById(R.id.btn_appointment_buy);
+            //  holder.cannotButBtn = (Button) view.findViewById(R.id.btn_appointment_cannot_buy);
+            holder.productPicIV = (ImageView) view.findViewById(R.id.iv_appointment_image);
+            holder.amNameTV = (TextView) view.findViewById(R.id.tv_appointment_name);
+            holder.salestarttimeTV = (TextView) view.findViewById(R.id.tv_appointment_rbstarttime);
+            holder.saleendtimeTV = (TextView) view.findViewById(R.id.tv_appointment_rbendtime);
+            holder.amProducTV = (TextView) view.findViewById(R.id.tv_appointment_product);
+            holder.amDescTv = (TextView) view.findViewById(R.id.tv_appointment_description);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
+        bookBean = mDatas.get(position);
+        if (bookBean != null) {
+            // ProductColorBean colorBean = bookBean.getProductVO();
+            // BookBean appointmentBean = bookBean.getAppointmentVO();
+
+			/*
+             * String proName = colorBean.getProName() == null ? "" : colorBean.getProName(); String proVersionl =
+			 * colorBean.getProVersion() == null ? "" : colorBean.getProVersion(); String proRom = colorBean.getProRom() ==
+			 * null ? "" : colorBean.getProRom(); String proColor = colorBean.getProColor() == null ? "" :
+			 * colorBean.getProColor(); String pro = proName + " " + proVersionl + "" + proRom + " " + proColor;
+			 *
+			 * String amProduct = String.format(mContext.getString(R.string.appointment_product), pro);
+			 */
+            String amName = bookBean.getAmName();
+            holder.amNameTV.setText(amName);
+            //抢购开始时间目前定义为预约结束时间
+            String saleStarttime =
+                    String.format(mContext.getString(R.string.appointment_rbstarttime), bookBean.getSaleStartTime());
+            holder.salestarttimeTV.setText(saleStarttime);
+            String saleEndtime =
+                    String.format(mContext.getString(R.string.appointment_rbendtime), bookBean.getSaleEndTime());
+            holder.saleendtimeTV.setText(saleEndtime);
+            holder.amProducTV.setText(bookBean.getProName());
+
+            // holder.saleendtimeTV.setText(amTime);预约时间没啥意义，不显示
+
+            //holder.amDescTv.setText(String.format(mContext.getString(R.string.can_buy_number), bookBean.getRbNum()));
+            String productPic = bookBean.getProPic();
+            if (!TextUtils.isEmpty(productPic)) {
+                ImageLoader imageLoader = ImageLoader.getInstance();
+                holder.productPicIV.setImageDrawable(null);
+                imageLoader.displayImage(productPic, holder.productPicIV, mImageLoadingListener);
+            } else {
+                holder.productPicIV.setImageResource(R.drawable.no_picture);
+            }
+            // 可以抢购
+            if (bookBean.getIsPrepaid() == 1) {
+                switch (bookBean.getState()) {
+                    case 4:
+                        holder.rbBtn.setText(R.string.wait_buy);
+                        holder.rbBtn.setEnabled(false);
+                        break;
+                    case 5:
+                        holder.rbBtn.setText(R.string.can_buy_now);
+                        holder.rbBtn.setOnClickListener(new BuyBtnOnClickListener(bookBean.getProId()));
+                        break;
+                    case 6:
+                        holder.rbBtn.setText(R.string.sell_out);
+                        holder.rbBtn.setEnabled(false);
+                        break;
+                    case 7:
+                        holder.rbBtn.setText(R.string.sell_out);
+                        holder.rbBtn.setEnabled(false);
+                        break;
+                    case 8:
+                        holder.rbBtn.setText(R.string.wait_buy);
+                        holder.rbBtn.setEnabled(false);
+                        break;
+                    case 9:
+                        holder.rbBtn.setText(R.string.wait_buy);
+                        holder.rbBtn.setEnabled(false);
+                        break;
+                    default:
+                        holder.rbBtn.setVisibility(View.GONE);
+                }
+            } else if (bookBean.getIsPrepaid() == 2) {
+                switch (bookBean.getState()) {
+                    case 4:
+                        holder.rbBtn.setText(R.string.i_need_pay);
+                        holder.rbBtn.setOnClickListener(new PayBtnOnClickListener(bookBean.getProId()));
+                        break;
+                    case 5:
+                        holder.rbBtn.setText(R.string.can_buy_now);
+                        holder.rbBtn.setOnClickListener(new BuyBtnOnClickListener(bookBean.getProId()));
+                        break;
+                    case 6:
+                        holder.rbBtn.setText(R.string.sell_out);
+                        holder.rbBtn.setEnabled(false);
+                        break;
+                    case 7:
+                        holder.rbBtn.setText(R.string.sell_out);
+                        holder.rbBtn.setEnabled(false);
+                        break;
+                    case 8:
+                        holder.rbBtn.setText(R.string.i_need_pay);
+                        holder.rbBtn.setOnClickListener(new PayBtnOnClickListener(bookBean.getProId()));
+                        break;
+                    case 9:
+                        holder.rbBtn.setText(R.string.i_need_pay);
+                        holder.rbBtn.setOnClickListener(new PayBtnOnClickListener(bookBean.getProId()));
+                        break;
+                    default:
+                        holder.rbBtn.setVisibility(View.GONE);
+                }
+            }
+
+
+          /*  if (bookBean.getState() == 1) {
+                holder.rbBtn.setVisibility(View.VISIBLE);
+                //  holder.cannotButBtn.setVisibility(View.GONE);
+                holder.rbBtn.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String url = Constants.NetWorkRequest.SHOPPING_ADD_CART_URL_031;
+                        Map<String, String> map = new HashMap<String, String>();
+                        map.put("productId", bookBean.getProId());
+                        map.put("num", "1");
+                        requestHttp(url, map, mAddShopCartHttpResponseHandler);
+
+                    }
+
+                });
+            } else {
+
+                holder.rbBtn.setVisibility(View.GONE);
+                // holder.cannotButBtn.setVisibility(View.VISIBLE);
+            }*/
+        }
+        return view;
+    }
+
+    public void requestHttp(String url, Map<String, String> map, CustomerJsonHttpResponseHandler httpResponseHandler) {
+        HttpClient client = HttpClient.getInstall(mContext);
+        RequestParams params = new RequestParams(map);
+        client.postAsync(url, params, httpResponseHandler);
+        map.put("productId", bookBean.getProId());
+        map.put("num", "1");
+        //requestHttp(url, map, mAddShopCartHttpResponseHandler);
+    }
+
+    public interface BtnOnClickListener {
+        public void pay(String proId);
+
+        public void buy(String proId);
+    }
+
+    public static class ViewHolder {
+        Button rbBtn;
+        //  Button cannotButBtn;
+        ImageView productPicIV;
+        TextView saleendtimeTV;
+        TextView amNameTV;
+        TextView amProducTV;
+        TextView salestarttimeTV;
+        TextView amDescTv;
+    }
+
+    private class PayBtnOnClickListener implements OnClickListener {
+        String proId;
+
+        PayBtnOnClickListener(String proId) {
+            this.proId = proId;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mBtnOnClickListener != null) {
+                mBtnOnClickListener.pay(this.proId);
+            }
+
+        }
+    }
+
+    private class BuyBtnOnClickListener implements OnClickListener {
+        String proId;
+
+        BuyBtnOnClickListener(String proId) {
+            this.proId = proId;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mBtnOnClickListener != null) {
+                mBtnOnClickListener.buy(this.proId);
+            }
+
+        }
+    }
+
+
+}

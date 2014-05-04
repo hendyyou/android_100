@@ -1,0 +1,100 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.ShopApp;
+import cn.digione.yibaic.shop.acitvity.FMaBuyActivity;
+import cn.digione.yibaic.shop.acitvity.ProductListActivity;
+import cn.digione.yibaic.shop.bean.ActivitiesBean;
+import cn.digione.yibaic.shop.util.ToastUtil;
+
+public class ActivitiesWebFragment extends BaseFragment {
+	private LinearLayout mFavoriteAndImmdBuyLL;
+	private LinearLayout mFMaAndSubscribeLL;
+	private WebView mWebView;
+	private Button mFavotireBtn;
+	private Button mImmdBuyBtn;
+	private Button mSubscribeBtn;
+	private Button mFMaBtn;
+	private ActivitiesBean activitiesBean;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.product_details_fragment, container, false);
+		mFavoriteAndImmdBuyLL = (LinearLayout) view.findViewById(R.id.ll_immd_favorite_container);
+		mFavoriteAndImmdBuyLL.setVisibility(View.GONE);
+		mFMaAndSubscribeLL = (LinearLayout) view.findViewById(R.id.ll_f_subscribe_container);
+		mWebView = (WebView) view.findViewById(R.id.wv_product_detail_desc);
+		WebSettings webSettings = mWebView.getSettings();
+		webSettings.setJavaScriptEnabled(true);
+		mWebView.setWebViewClient(new WebViewClient() {
+			/*
+			 * @Override public boolean shouldOverrideUrlLoading(WebView view, String url) { return
+			 * super.shouldOverrideUrlLoading(view, url); }
+			 */
+
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				super.onPageStarted(view, url, favicon);
+				ToastUtil.show("onPageStarted");
+				ShopApp.getInstance().showDialog(getActivity());
+			}
+
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				ToastUtil.show("onPageFinished");
+				ShopApp.getInstance().dismissDialog();
+			}
+
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				// TODO Auto-generated method stub
+				return true;
+			}
+
+		});
+		Intent intent = getActivity().getIntent();
+
+		if (intent != null) {
+			activitiesBean = (ActivitiesBean) intent.getSerializableExtra("activitiesBean");
+		}
+		if (activitiesBean != null) {
+			mWebView.loadUrl(activitiesBean.getUrl());
+
+			mImmdBuyBtn = (Button) view.findViewById(R.id.btn_subscribe);
+			mFMaBtn = (Button) view.findViewById(R.id.btn_f_buy_btn);
+			mFMaBtn.setVisibility(View.GONE);
+			mImmdBuyBtn.setVisibility(View.VISIBLE);
+			mImmdBuyBtn.setText(getString(R.string.goahead));
+			mImmdBuyBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(getActivity(), ProductListActivity.class);
+					intent.putExtra("product_model", activitiesBean.getProModel());
+					startActivity(intent);
+				}
+			});
+
+		}
+		return view;
+
+	}
+}

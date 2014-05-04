@@ -1,0 +1,153 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.util.ArrayList;
+
+/**
+ * 订单详情实体
+ * 
+ * @author Administrator
+ * 
+ */
+public class OrderDetailBean {
+	/**
+	 * 订单最终总费用
+	 */
+	private int totalFee;
+
+	/**
+	 * 商品总价(不包含运费和优惠)
+	 */
+	private int totalProductFee;
+	/**
+	 * 订单状态(已付款、未付款)
+	 */
+	private String orderStatus;
+	/**
+	 * 运费
+	 */
+	private int shippingRate;
+
+	/**
+	 * 优惠金额
+	 */
+	private int preferential;
+
+	/**
+	 * 下单时间
+	 */
+	private String orderCreateTime;
+
+	/**
+	 * 订单编号
+	 */
+	private String orderNO;
+
+	/**
+	 * 收货地址
+	 */
+	private String address;
+	
+	/**
+	 * 发票类型
+	 */
+	private String invoiceTypeName;
+
+	/**
+	 * 能否取消
+	 */
+	private int canCancel;
+
+	/**
+	 * 订单中的产品
+	 */
+	private ArrayList<OrderProductBean> productBeanList;
+
+	public int getTotalFee() {
+		return totalFee / 100;
+	}
+
+	public void setTotalFee(int totalFee) {
+		this.totalFee = totalFee;
+	}
+
+	public int getTotalProductFee() {
+		return totalProductFee;
+	}
+
+	public void setTotalProductFee(int totalProductFee) {
+		this.totalProductFee = totalProductFee;
+	}
+
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public int getPreferential() {
+		return preferential;
+	}
+
+	public void setPreferential(int preferential) {
+		this.preferential = preferential;
+	}
+
+	public int getShippingRate() {
+		return shippingRate;
+	}
+
+	public void setShippingRate(int shippingRate) {
+		this.shippingRate = shippingRate;
+	}
+
+	public String getOrderCreateTime() {
+		return orderCreateTime;
+	}
+
+	public void setOrderCreateTime(String orderCreateTime) {
+		this.orderCreateTime = orderCreateTime;
+	}
+
+	public String getOrderNO() {
+		return orderNO;
+	}
+
+	public void setOrderNO(String orderNO) {
+		this.orderNO = orderNO;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public ArrayList<OrderProductBean> getProductBeanList() {
+		return productBeanList;
+	}
+
+	public void setProductBeanList(ArrayList<OrderProductBean> productBeanList) {
+		this.productBeanList = productBeanList;
+	}
+
+	public String getInvoiceTypeName() {
+		return invoiceTypeName;
+	}
+
+	public void setInvoiceTypeName(String invoiceTypeName) {
+		this.invoiceTypeName = invoiceTypeName;
+	}
+
+	public int getCanCancel() {
+		return canCancel;
+	}
+
+	public void setCanCancel(int canCancel) {
+		this.canCancel = canCancel;
+	}
+
+}

@@ -1,0 +1,82 @@
+package cn.digione.yibaic.shop.acitvity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.ui.BookFragment;
+import cn.digione.yibaic.shop.ui.OrderDetailFragment;
+import cn.digione.yibaic.shop.ui.OrderListFragment;
+
+/**
+ * 订单列表
+ * 
+ * @author zhangqr
+ */
+
+public class OrderListActivity extends BaseActivity
+
+{
+
+	public OrderListActivity() {
+	}
+
+	private void handleIntent() {
+		Intent intent = getIntent();
+		mAction = intent.getAction();
+		mType = intent.getIntExtra("order_list_type", 0);
+	}
+
+	protected Fragment newFragmentByTag(String s) {
+
+		if ("tag_order_list".equals(s)) {
+			currentFragment = new OrderListFragment();
+			((OrderListFragment) currentFragment).setAction(mAction);
+			((OrderListFragment) currentFragment).setType(mType);
+
+		} else if ("order_detail_fragment".equals(s)) {
+			currentFragment = new OrderDetailFragment();
+		} else if ("appointment_fragment".equals(s)) {
+			currentFragment = new BookFragment();
+		}
+
+		return currentFragment;
+	}
+
+	protected void onCreate(Bundle bundle) {
+		super.onCreate(bundle);
+		setCustomContentView(R.layout.order_list_activity);
+		setHomeButtonEnable(true);
+		setShoppingBarEnable(true);
+		handleIntent();
+
+		if (TextUtils.equals(mAction, "service_list")) {
+			showFragment("tag_order_list", null, false);
+			if (mType == Constants.AccountFragment.ORDER_LIST) {
+				setTitle(R.string.account_my_order_list);
+			}
+
+		}
+
+		if (TextUtils.equals(mAction, "book_list")) {
+			showFragment("appointment_fragment", null, false);
+			if (mType == Constants.AccountFragment.BOOK_LIST) {
+				setTitle(R.string.book_query);
+			}
+
+		}
+	}
+
+	public static final String TAG_ORDER_DELIVERVIEW = "tag_order_deliverview";
+	public static final String TAG_ORDER_EXPRESS = "tag_order_express";
+	public static final String TAG_ORDER_LIST = "tag_order_list";
+	public static final String TAG_ORDER_VIEW = "tag_order_view";
+	private String mAction;
+
+	private Fragment currentFragment;
+	// private OrderViewFragment mOrderViewFragment;
+
+	private int mType;
+}

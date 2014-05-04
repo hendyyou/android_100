@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:padding="@dimen/layout_padding"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView android:scrollbarStyle="insideOverlay"
+	    android:id="@+id/sv_select_type_redio_panel"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+        <LinearLayout android:orientation="vertical"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content">
+            <RadioGroup android:id="@+id/rg_account_types"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content" />
+            <LinearLayout android:orientation="vertical"
+	            android:id="@+id/ll_email_input_panel"
+	            android:background="@drawable/radiobutton_bottom_noarrow_p"
+	            android:visibility="gone"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content">
+                <TextView android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:text="@string/input_email_prompt"
+	                style="@style/Widget.AccountTitleBar" />
+                <EditText android:id="@+id/et_email"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginTop="@dimen/button_padding"
+	                android:hint="@string/email_address"
+	                android:singleLine="true"
+	                android:inputType="textEmailAddress"
+	                android:imeOptions="actionNext"
+	                style="@style/Widget.EditText" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout android:id="@+id/bottom_panel"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="15.0dip"
+	    android:layout_below="@id/sv_select_type_redio_panel">
+        <Button android:id="@+id/btn_previous"
+	        android:layout_width="0.0dip"
+	        android:layout_marginRight="@dimen/button_padding"
+	        android:text="@string/prev"
+	        android:layout_weight="1.0"
+	        style="@style/Widget.Button" />
+        <Button android:id="@+id/btn_next"
+	        android:layout_width="0.0dip"
+	        android:text="@string/next"
+	        android:layout_weight="1.0"
+	        style="@style/Widget.Button.Main" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>	
+	<dimen name="account_fragment_lv_height">61dip</dimen>
+</resources>

@@ -1,0 +1,126 @@
+package cn.digione.yibaic.shop.adapter;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.bean.CouponBean;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+
+import java.util.List;
+
+public class CouponListAdapter extends BaseAdapter {
+
+	private List<CouponBean> couponList;
+	private Context mContext;
+	private LayoutInflater mInflater;
+
+	public CouponListAdapter(Context context, List<CouponBean> list) {
+		couponList = list;
+		mContext = context;
+		mInflater = LayoutInflater.from(mContext);
+	}
+
+	protected void bindBackground(View view, int i) {
+		if (getCount() == 1) {
+			view.setBackgroundResource(R.drawable.list_item_single_bg);
+			return;
+		}
+		/*
+		 * if (i == 0) { view.setBackgroundResource(R.drawable.list_item_top_bg); return; }
+		 */
+		if (i == -1 + getCount()) {
+			view.setBackgroundResource(R.drawable.list_item_bottom_bg);
+			return;
+		} else {
+			view.setBackgroundResource(R.drawable.list_item_middle_bg);
+			return;
+		}
+	}
+
+	@Override
+	public int getCount() {
+		int count = 0;
+		if (couponList != null && couponList.size() > 0) {
+			count = couponList.size();
+		}
+		return count;
+	}
+
+	@Override
+	public Object getItem(int position) {
+		// TODO Auto-generated method stub
+		return couponList.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		// TODO Auto-generated method stub
+		ViewHolder viewHolder = null;
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.coupon_query_item_fragment, null);
+			viewHolder = new ViewHolder();
+			viewHolder.couponCodeView = (TextView) convertView.findViewById(R.id.coupon_code_tv);
+			viewHolder.couponDenominationView = (TextView) convertView.findViewById(R.id.coupon_denomination_tv);
+			viewHolder.couponStatusView = (TextView) convertView.findViewById(R.id.coupon_status_tv);
+			viewHolder.couponUseView = (TextView) convertView.findViewById(R.id.coupon_use_tv);
+			viewHolder.couponUseLimitView = (TextView) convertView.findViewById(R.id.coupon_use_limit_tv);
+			viewHolder.couponTimeLimitView = (TextView) convertView.findViewById(R.id.coupon_time_limit_tv);
+			viewHolder.contentLayoutView = convertView.findViewById(R.id.coupon_relative_layout);
+			convertView.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) convertView.getTag();
+		}
+		final CouponBean cobean = couponList.get(position);
+		viewHolder.couponCodeView.setText(cobean.getConNo());
+		viewHolder.couponDenominationView.setText(mContext.getString(R.string.order_list_rmb)
+				+ Utils.Money.MoneyToYuan(cobean.getAmount()));
+		viewHolder.couponStatusView.setText(cobean.getStateText());
+		viewHolder.couponUseView.setText(cobean.getPurposeText());
+		viewHolder.couponUseLimitView.setText(Utils.Money.MoneyToYuan(cobean.getUseCondition()));
+		viewHolder.couponTimeLimitView.setText(cobean.getEndTime());
+		viewHolder.contentLayoutView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+				if (currentApiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+					ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+					cmb.setPrimaryClip(ClipData.newPlainText("", cobean.getConNo()));
+				} else {
+					android.text.ClipboardManager clipboard = (android.text.ClipboardManager) mContext
+							.getSystemService(Context.CLIPBOARD_SERVICE);
+					clipboard.setText(cobean.getConNo());
+				}
+				ToastUtil.show(mContext.getString(R.string.already_copy));
+			}
+		});
+
+		bindBackground(convertView, position);
+		return convertView;
+	}
+
+	private class ViewHolder {
+		View contentLayoutView;
+		TextView couponCodeView; // 优惠码
+		TextView couponDenominationView; // 面额
+		TextView couponStatusView; // 状态
+		TextView couponUseView; // 用途
+		TextView couponUseLimitView; // 需满足金额
+		TextView couponTimeLimitView; // 结束时间
+	}
+}

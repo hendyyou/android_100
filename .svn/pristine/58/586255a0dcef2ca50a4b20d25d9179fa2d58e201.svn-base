@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:paddingBottom="@dimen/home_cellspacing"
+	android:background="@drawable/product_item_bg"
+	style="@style/Widget.Item.ListView.DoubleLine"
+	android:id="@+id/rl_product_container">
+
+	<ImageView
+		android:id="@+id/iv_product_image"
+		android:layout_width="@dimen/image_width"
+		android:layout_height="@dimen/image_width"
+		android:padding="5dip"
+		android:clickable="false"
+		android:contentDescription="@null"
+		android:focusable="false"
+		android:scaleType="fitXY" />
+
+	<LinearLayout
+		android:id="@+id/tv_product_text_container"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/iv_product_image"
+		android:orientation="vertical"
+		android:paddingTop="5.0dip">
+
+		<TextView
+			android:id="@+id/tv_product_name"
+			style="@style/TextAppearance.List.Large"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/app_name" />
+
+		<TextView
+			android:id="@+id/tv_product_netType"
+			style="@style/TextAppearance.List.Large"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center" />
+
+		<TextView
+			android:id="@+id/tv_product_price"
+			style="@style/TextAppearance.List.Large"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:text="@string/app_name"
+			android:textColor="@color/highlight_text_color" />
+
+		<TextView
+			android:id="@+id/tv_product_activity_description"
+			style="@style/TextAppearance.List.Large"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:textColor="@color/secondary_text_color"
+			android:visibility="gone" />
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/btn_product_operator"
+		style="@style/Widget.Button.Main"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBottom="@id/iv_product_image"
+		android:layout_alignParentRight="true"
+		android:layout_gravity="right"
+		android:layout_marginRight="10dip"
+		android:layout_centerVertical="true"
+		android:padding="5dip"
+		android:text="@string/f_buy" />
+</RelativeLayout>
+

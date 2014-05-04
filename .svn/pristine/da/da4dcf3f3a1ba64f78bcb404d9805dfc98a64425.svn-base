@@ -1,0 +1,105 @@
+package cn.digione.yibaic.shop.adapter;
+
+import java.util.List;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.bean.AddressBean;
+
+public class AddressListAdapter extends BaseAdapter {
+
+	private List<AddressBean> addressList;
+	private Context mContext;
+	private LayoutInflater mInflater;
+
+	public AddressListAdapter(Context context, List<AddressBean> list) {
+		addressList = list;
+		mContext = context;
+		mInflater = LayoutInflater.from(mContext);
+	}
+
+	protected void bindBackground(View view, int i) {
+		if (getCount() == 1) {
+			view.setBackgroundResource(R.drawable.list_item_single_bg);
+			return;
+		}
+		/*
+		 * if (i == 0) { view.setBackgroundResource(R.drawable.list_item_top_bg); return; }
+		 */
+		if (i == -1 + getCount()) {
+			view.setBackgroundResource(R.drawable.list_item_bottom_bg);
+			return;
+		} else {
+			view.setBackgroundResource(R.drawable.list_item_middle_bg);
+			return;
+		}
+	}
+
+	@Override
+	public int getCount() {
+		int count = 0;
+		if (addressList != null && addressList.size() > 0) {
+			count = addressList.size();
+		}
+		return count;
+	}
+	
+	public void deleteItem(int position){
+		if(addressList!=null){
+			addressList.remove(position);
+		}
+	}
+
+	@Override
+	public Object getItem(int position) {
+		// TODO Auto-generated method stub
+		return addressList.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		// TODO Auto-generated method stub
+		ViewHolder viewHolder = null;
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.address_list_item, null);
+			viewHolder = new ViewHolder();
+			viewHolder.areaView = (TextView) convertView.findViewById(R.id.area);
+			viewHolder.addressView = (TextView) convertView.findViewById(R.id.address);
+			viewHolder.consigneeView = (TextView) convertView.findViewById(R.id.consignee);
+			convertView.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) convertView.getTag();
+		}
+		final AddressBean addressbean = addressList.get(position);
+
+		viewHolder.areaView.setText(addressbean.getProvinceName() + " " + addressbean.getCityName() + " "
+				+ addressbean.getCountyName());
+
+		viewHolder.addressView.setText(addressbean.getAddress());
+
+		String telString = addressbean.getMobile()==null ? addressbean.getPhone() : addressbean.getMobile();
+		
+		
+		viewHolder.consigneeView.setText(addressbean.getName() + " " + telString);
+
+		bindBackground(convertView, position);
+		return convertView;
+	}
+
+	private class ViewHolder {
+		TextView areaView;
+		TextView addressView;
+		TextView consigneeView;
+	}
+}

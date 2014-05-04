@@ -1,0 +1,51 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+
+public class FMaBuyFragment extends BaseFragment {
+	private Activity mContext;
+	private EditText mInputFMaET;
+	private Button mFMaSubmitBtn;
+	private TextView mFMaObtainTV;
+
+	public BaseActivity getParent() {
+		return (BaseActivity) getActivity();
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mContext = getParent();
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.fmabuy_fragment, container, false);
+		mInputFMaET = (EditText) view.findViewById(R.id.et_f_ma_input);
+		mFMaObtainTV = (TextView) view.findViewById(R.id.tv_f_ma_obtain);
+		mFMaSubmitBtn = (Button) view.findViewById(R.id.btn_f_ma_submit);
+		String fmaObtainStr = getString(R.string.f_ma_obtain_hint);
+		Spanned fmaObtainSpn = Html.fromHtml(fmaObtainStr);
+		mFMaObtainTV.setText(fmaObtainSpn);
+		mFMaSubmitBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+			}
+		});
+		return view;
+
+	}
+}

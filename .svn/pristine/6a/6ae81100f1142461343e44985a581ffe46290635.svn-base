@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="list_item_height_single_line">84dip</dimen>
+	<dimen name="title_bar_height">36dip</dimen>
+	<dimen name="list_item_height_double_line">83dip</dimen>
+	<dimen name="button_height">35dip</dimen>
+	<dimen name="button_width">121dip</dimen>
+	<dimen name="button_width_padping_lr">28dip</dimen>
+	<dimen name="product_image_height">52dip</dimen>
+</resources>

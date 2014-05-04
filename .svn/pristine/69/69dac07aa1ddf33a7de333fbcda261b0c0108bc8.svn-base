@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="@dimen/order_submit_product_item_height"
+	android:background="@drawable/product_item_bg">
+
+	<RelativeLayout
+		android:id="@+id/rl_ordersubmit_item_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:paddingBottom="@dimen/home_cellspacing">
+
+		<ImageView
+			android:id="@+id/iv_ordersubmit_pic"
+			android:focusable="false"
+			android:clickable="false"
+			android:layout_width="@dimen/order_submit_product_pic_size"
+			android:layout_height="@dimen/order_submit_product_pic_size"
+			android:layout_marginRight="7.0dip"
+			android:scaleType="fitXY"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true" />
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:id="@+id/ll_ordersubmit_text_center"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginRight="20.0dip"
+			android:layout_toRightOf="@id/iv_ordersubmit_pic"
+			android:layout_centerVertical="true">
+
+			<TextView
+				android:textSize="@dimen/text_size_medium"
+				android:ellipsize="end"
+				android:id="@+id/tv_ordersubmit_text_title"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				style="@style/TextAppearance.List.Primary" />
+
+			<TextView
+				android:textSize="@dimen/text_size_normal"
+				android:id="@+id/tv_ordersubmit_text_center"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/TextAppearance.Normal.Gray" />
+		</LinearLayout>
+	</RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,115 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ListView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.OrderListActivity;
+import cn.digione.yibaic.shop.adapter.AppointmentAdapter;
+import cn.digione.yibaic.shop.bean.BookBean;
+import cn.digione.yibaic.shop.bean.JsonPagerEntityBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.Log;
+import com.loopj.android.http.RequestParams;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: youzh
+ * Date: 2014/3/28
+ * Time: 15:46
+ */
+public class BookFragment extends BaseFragment<JsonPagerEntityBean<BookBean>> implements AbsListView.OnScrollListener {
+
+    private ListView mAppointmentListLV;
+    private List<BookBean> mDatas;
+    private AppointmentAdapter mAppointmentAdapter;
+
+    public OrderListActivity getParent() {
+        return (OrderListActivity) getActivity();
+    }
+
+    public void requestHttp() {
+        HttpClient client = HttpClient.getInstall(getParent());
+        String url = Constants.NetWorkRequest.BOOK_LIST_URL;
+        Map<String, String> map = new HashMap<String, String>();
+        // map.put("searchProductVO.proClass", categoryId + "");
+        map.put("searchProductVO.pageSize", mPageSize + "");
+        map.put("searchProductVO.currentPage", mCurrentPage + "");
+        RequestParams params = new RequestParams(map);
+        client.postAsync(url, params, mCustomerJsonHttpResponseHandler);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getParent().setHomeButtonEnable(true);
+        mCustomerJsonHttpResponseHandler =
+                new CustomerJsonHttpResponseHandler<JsonPagerEntityBean<BookBean>>(getParent(), false) {
+                    @Override
+                    public void processCallSuccess(JsonPagerEntityBean<BookBean> outBean, String msg) {
+                        if (outBean != null) {
+                            if (mDatas == null) {
+                                mDatas = new ArrayList<BookBean>();
+                            }
+                            if (mDatas != null && !mDatas.isEmpty() && mCurrentPage == 1) {
+                                mDatas.clear();
+                            }
+                            mPageSize = outBean.getPageSize()  ;
+                            mCurrentPage = outBean.getCurrentPage();
+                            mDatas = outBean.getResultList();
+                            mAppointmentAdapter = new AppointmentAdapter(getParent(), mDatas);
+                            mAppointmentListLV.setAdapter(mAppointmentAdapter);
+                            mAppointmentListLV.setSelection(mSelectposition);
+                            mAppointmentListLV.setOnScrollListener(BookFragment.this);
+                        }
+                    }
+                };
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        requestHttp();
+        View view = inflater.inflate(R.layout.book_fragment, container, false);
+        mAppointmentListLV = (ListView) view.findViewById(R.id.lv_appointment_list);
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        // 当不滚动时
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            // 判断是否滚动到底部
+            if (view.getLastVisiblePosition() == view.getCount() - 1) {
+                if (mCurrentPage < mPageCount && mPageCount != 1 && mDatas != null && mDatas.size() > 0) {
+                    mSelectposition = mDatas.size() - 1;
+                    // int pageNumber = mCurrentPage++;
+                    ++mCurrentPage;
+                    Log.i("mSelectposition=" + mSelectposition + ",CurrentPage=" + mCurrentPage);
+                    // requestHttp(pageNumber, mPageSize);
+                    requestHttp();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+}

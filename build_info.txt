@@ -1,0 +1,6 @@
+build文件的使用方法：
+有几个节点是需要我们注意的：
+1、copyDevFiles：把用于开发环境的文件拷贝到工程目录中，以便编译运行的时候是链接开发机器，如192.168.2.196。
+2、copyTestFiles：把用于测试环境的文件拷贝到工程目录中，以便编译运行的为链接测试环境的机器，如jstest.189b2b.com。
+3、copyReleaseFiles：把用于正式环境的文件拷贝到工程目录中，以便编译运行的为链接正式环境的机器，如js.189b2b.com。
+4、build的缺省编译为正式环境的apk包。即release的target名称。如果要编译用于测试环境的apk包，则使用release-test的target名称。

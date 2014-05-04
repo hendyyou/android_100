@@ -1,0 +1,149 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.ShopApp;
+import cn.digione.yibaic.shop.acitvity.ProductListActivity;
+import cn.digione.yibaic.shop.acitvity.ShoppingActivity;
+import cn.digione.yibaic.shop.adapter.ProductColorAdapter;
+import cn.digione.yibaic.shop.bean.JsonPagerEntityBean;
+import cn.digione.yibaic.shop.bean.ProductColorBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.Log;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import com.loopj.android.http.RequestParams;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ProductColorFragment extends BaseFragment<JsonPagerEntityBean<ProductColorBean>>
+        implements AbsListView.OnScrollListener {
+    private ProductColorAdapter mColorSelectAdapter;
+    private List<ProductColorBean> mDatas = null;
+    private ListView mProductListLV;
+    private Button submitBtn;
+    private String mProModel;
+    private String mProRom;
+    private int mCategoryId;
+    private String mCategoryName;
+
+    public ProductListActivity getParent() {
+        return (ProductListActivity) getActivity();
+    }
+
+    public void requestHttp() {
+        HttpClient client = HttpClient.getInstall(getParent());
+        String url = Constants.NetWorkRequest.PRODUCT_COLOR_LIST_URL;
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("searchProductVO.proClass", mCategoryId + "");
+        map.put("searchProductVO.proModel", mProModel);
+        map.put("searchProductVO.proRom", mProRom);
+        map.put("searchProductVO.pageSize", mPageSize + "");
+        map.put("searchProductVO.currentPage", mCurrentPage + "");
+        RequestParams params = new RequestParams(map);
+        client.postAsync(url, params, mCustomerJsonHttpResponseHandler);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCustomerJsonHttpResponseHandler =
+                new CustomerJsonHttpResponseHandler<JsonPagerEntityBean<ProductColorBean>>(getParent(), false) {
+                    @Override
+                    public void processCallSuccess(final JsonPagerEntityBean<ProductColorBean> outBean, final String msg) {
+                        if (outBean != null && outBean.getResultList().size() > 0) {
+                            if (mDatas == null) {
+                                mDatas = new ArrayList<ProductColorBean>();
+                            }
+                            if (mDatas != null && mDatas.isEmpty() && mCurrentPage == 1) {
+                                mDatas.clear();
+                            }
+                            mDatas.addAll(outBean.getResultList());
+                            mProductListLV.setSelection(mSelectposition);
+                            mColorSelectAdapter = null;
+                            mColorSelectAdapter = new ProductColorAdapter(getParent(), mDatas);
+                            mProductListLV.setAdapter(mColorSelectAdapter);
+                            mProductListLV.setOnScrollListener(ProductColorFragment.this);
+                            ShopApp.setListViewHeightBasedOnChildren(mProductListLV);
+                        }
+                    }
+                };
+        getParent().setTitle(R.string.please_choose_color_product);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            mProModel = args.getString("select_product_model");
+            mProRom = args.getString("select_product_rom");
+            mCategoryId = args.getInt("category_id");
+            mCategoryName = args.getString("category_name");
+        }
+        requestHttp();
+        View view = inflater.inflate(R.layout.product_color_list_fragment, container, false);
+        mProductListLV = (ListView) view.findViewById(R.id.lv_product_list);
+        mProductListLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //view.setBackgroundResource(R.drawable.select_indicator_bg_p);
+            }
+        });
+        mProductListLV.setOnScrollListener(this);
+
+        submitBtn = (Button) view.findViewById(R.id.btn_submit);
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedItemPosition = mProductListLV.getSelectedItemPosition();
+                if (selectedItemPosition >= 0) {
+                    // 提交到服务器的数据库中，然后
+                    ProductColorBean colorBean = mDatas.get(selectedItemPosition);
+                    Intent intent = new Intent(getActivity(), ShoppingActivity.class);
+                    intent.putExtra("product_color_item_add_shopcart", colorBean);
+                    ToastUtil.show(selectedItemPosition + "" + colorBean);
+                    startActivity(intent);
+                } else {
+                    ToastUtil.show(R.string.please_choose_color_product);
+                }
+            }
+        });
+        return view;
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        // 当不滚动时
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            // 判断是否滚动到底部
+            if (view.getLastVisiblePosition() == view.getCount() - 1) {
+                if (mCurrentPage < mPageCount && mPageCount != 1 && mDatas != null && mDatas.size() > 0) {
+                    mSelectposition = mDatas.size() - 1;
+                    // int pageNumber = mCurrentPage++;
+                    ++mCurrentPage;
+                    Log.i("mSelectposition=" + mSelectposition + ",CurrentPage=" + mCurrentPage);
+                    // requestHttp(pageNumber, mPageSize);
+                    requestHttp();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+}

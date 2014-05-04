@@ -1,0 +1,147 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.io.Serializable;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: youzh
+ * Date: 14-3-11
+ * Time: 上午11:02
+ */
+public class ShoppingCartItemBean implements Serializable {
+
+    private static final long serialVersionUID = -8471565502826654721L;
+
+    // 产品id
+    private Integer id;
+
+    // 产品id
+    private Integer productId;
+    // 购买数量
+    private Integer num;
+
+    // 产品图片
+    private String proPic;
+    // 品牌名称
+    private String proBrand;
+    // 型号
+    private String proModel;
+    // 产品名称
+    private String proName;
+    // 价格(传入分为单位)
+    private Integer proPrice;
+
+    private String proColor;
+
+    private String proRom;
+
+    private String proRam;
+
+    private String proPreferentialPrice;
+
+    private String proVersion;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+
+    public String getProPic() {
+        return proPic;
+    }
+
+    public void setProPic(String proPic) {
+        this.proPic = proPic;
+    }
+
+    public String getProBrand() {
+        return proBrand;
+    }
+
+    public void setProBrand(String proBrand) {
+        this.proBrand = proBrand;
+    }
+
+    public String getProModel() {
+        return proModel;
+    }
+
+    public void setProModel(String proModel) {
+        this.proModel = proModel;
+    }
+
+    public String getProName() {
+        return proName;
+    }
+
+    public void setProName(String proName) {
+        this.proName = proName;
+    }
+
+    public Integer getProPrice() {
+        return proPrice;
+    }
+
+    public void setProPrice(Integer proPrice) {
+        this.proPrice = proPrice;
+    }
+
+    public String getProColor() {
+        return proColor;
+    }
+
+    public void setProColor(String proColor) {
+        this.proColor = proColor;
+    }
+
+    public String getProRom() {
+        return proRom;
+    }
+
+    public void setProRom(String proRom) {
+        this.proRom = proRom;
+    }
+
+    public String getProRam() {
+        return proRam;
+    }
+
+    public void setProRam(String proRam) {
+        this.proRam = proRam;
+    }
+
+    public String getProPreferentialPrice() {
+        return proPreferentialPrice;
+    }
+
+    public void setProPreferentialPrice(String proPreferentialPrice) {
+        this.proPreferentialPrice = proPreferentialPrice;
+    }
+
+    public String getProVersion() {
+        return proVersion;
+    }
+
+    public void setProVersion(String proVersion) {
+        this.proVersion = proVersion;
+    }
+}

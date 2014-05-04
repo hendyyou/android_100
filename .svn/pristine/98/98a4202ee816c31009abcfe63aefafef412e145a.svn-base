@@ -1,0 +1,124 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ListView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.ProductListActivity;
+import cn.digione.yibaic.shop.adapter.ProductListAdapter;
+import cn.digione.yibaic.shop.bean.JsonPagerEntityBean;
+import cn.digione.yibaic.shop.bean.ProductBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.Log;
+import com.loopj.android.http.RequestParams;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ProductListFragment extends BaseFragment<JsonPagerEntityBean<ProductBean>> implements AbsListView.OnScrollListener {
+    private ProductListAdapter mProductListAdapter = null;
+    private List<ProductBean> mDatas = null;
+    private ListView mProductListLV = null;
+    private Bundle mBundle = null;
+    private int mCategoryId = -1;
+    private String mCategoryName = null;
+    private String mProductModel= null;
+
+    public void requestHttp() {
+        HttpClient client = HttpClient.getInstall(getParent());
+        String url = Constants.NetWorkRequest.PRODUCTLIST_URL;
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("searchProductVO.proClass", mCategoryId + "");
+        map.put("searchProductVO.pageSize", mPageSize + "");
+        map.put("searchProductVO.currentPage", mCurrentPage + "");
+        if (!TextUtils.isEmpty(mProductModel)){
+            map.put("searchProductVO.proModel",mProductModel);
+        }
+        RequestParams params = new RequestParams(map);
+        client.postAsync(url, params, mCustomerJsonHttpResponseHandler);
+    }
+
+    public ProductListActivity getParent() {
+        return (ProductListActivity) getActivity();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getParent().setHomeButtonEnable(true);
+        getParent().setShoppingBarEnable(true);
+        mBundle = getArguments();
+        mCategoryId = mBundle.getInt("category_id");
+        mCategoryName = mBundle.getString("category_name");
+        mProductModel = mBundle.getString("product_model");
+        getParent().setTitle(mCategoryName);
+
+        mCustomerJsonHttpResponseHandler =
+                new CustomerJsonHttpResponseHandler<JsonPagerEntityBean<ProductBean>>(getParent(), true) {
+                    @Override
+                    public void processCallSuccess(final JsonPagerEntityBean<ProductBean> outBean, final String msg) {
+                        if (outBean != null && outBean.getResultList().size() > 0) {
+                            if (mDatas == null) {
+                                mDatas = new ArrayList<ProductBean>();
+                            }
+                            Boolean isEmpty = mDatas.isEmpty();
+                            if (mDatas != null && !isEmpty && mCurrentPage == 1) {
+                                mDatas.clear();
+                            }
+                            mPageCount = outBean.getPageCount();
+                            mPageSize = outBean.getPageSize();
+                            //mCurrentPage = outBean.getCurrentPage();
+
+                            mDatas.addAll(outBean.getResultList());
+
+                            mProductListAdapter = null;
+                            mProductListAdapter = new ProductListAdapter(getParent(), mDatas, getArguments());
+                            mProductListLV.setAdapter(mProductListAdapter);
+                            mProductListLV.setSelection(mSelectposition);
+                            mProductListLV.setOnScrollListener(ProductListFragment.this);
+                        }
+                    }
+                };
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        requestHttp();
+        View view = inflater.inflate(R.layout.product_list_fragment, container, false);
+        mProductListLV = (ListView) view.findViewById(R.id.lv_product_list);
+        mProductListLV.setOnScrollListener(ProductListFragment.this);
+        return view;
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        // 当不滚动时
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            // 判断是否滚动到底部
+            if (view.getLastVisiblePosition() == view.getCount() - 1) {
+                if (mCurrentPage < mPageCount && mPageCount != 1 && mDatas != null && mDatas.size() > 0) {
+                    mSelectposition = mDatas.size() - 1;
+                    // int pageNumber = mCurrentPage++;
+                    ++mCurrentPage;
+                    Log.i("mSelectposition=" + mSelectposition + ",CurrentPage=" + mCurrentPage);
+                    // requestHttp(pageNumber, mPageSize);
+                    requestHttp();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+}

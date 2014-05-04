@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent">
+
+	<LinearLayout
+		android:id="@+id/order_fee_layout"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:background="@drawable/order_bottom_bg"
+		android:padding="10.0dip" >
+
+        <TextView
+			android:id="@+id/order_fee_bottom"
+			style="@style/TextAppearance.List.Primary"
+			android:layout_width="0.0dip"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_weight="1.0"
+			android:gravity="center"
+			android:paddingBottom="5.0dip"
+			android:textSize="@dimen/text_size_medium" />
+
+        <Button
+			android:id="@+id/pay_btn"
+			style="@style/Widget.Button.Main"
+			android:layout_width="0.0dip"
+			android:layout_weight="1.0"
+			android:text="@string/go_to_pay"/>
+    </LinearLayout>
+
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_above="@id/order_fee_layout"
+		android:padding="10.0dip" >
+
+        <TextView
+			style="@style/TextAppearance.List.Primary"
+			android:layout_width="0.0dip"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_weight="1.0"
+			android:gravity="center"
+			android:paddingBottom="5.0dip"
+			android:textSize="@dimen/text_size_medium" />
+
+        <Button
+			style="@style/Widget.Button.Main"
+			android:layout_width="0.0dip"
+			android:layout_weight="1.0"
+			android:text="@string/go_to_pay"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

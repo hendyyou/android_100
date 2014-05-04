@@ -1,0 +1,208 @@
+package cn.digione.yibaic.shop.adapter;
+
+import java.util.List;
+
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+import cn.digione.yibaic.shop.bean.ProductColorBean;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 14-3-6 Time: 下午2:39
+ */
+public class ProductColorAdapter extends BaseAdapter {
+	private final String JCODE_BUY_NOW = "jcode_buy_now";
+	private final String JCODE_SELL_OUT = "jcode_sell_out";
+	private final String GER_BOOK_NOW = "ger_book_now";
+	private final String GER_BUY_NOW = "ger_buy_now";
+	private final String GER_SELL_OUT = "ger_sell_out";
+	private BaseActivity mContext;
+	private LayoutInflater mLayoutInflater;
+	private List<ProductColorBean> datas;
+	private ImageLoadingListener mImageLoadingListener;
+	private String mJcode = null;
+	private ProductOperatorListener mProductOperatorListener;
+
+	public ProductColorAdapter(final BaseActivity mContext, List<ProductColorBean> datas, String jcode) {
+		this.datas = datas;
+		this.mContext = mContext;
+		this.mLayoutInflater = LayoutInflater.from(mContext);
+		this.mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+		mJcode = jcode;
+		// pics.add()
+	}
+
+	@Override
+	public int getCount() {
+		int count = 0;
+		if (datas != null && datas.size() > 0) {
+			count = datas.size();
+		}
+		return count;
+	}
+
+	@Override
+	public Object getItem(int position) {
+		Object object = null;
+		if (datas != null && datas.size() > 0) {
+			object = datas.get(position);
+		}
+		return object;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public View getView(final int position, View view, ViewGroup parent) {
+		ViewHolder viewHolder = null;
+		if (viewHolder == null) {
+			view = mLayoutInflater.inflate(R.layout.product_color_list_item, null);
+			viewHolder = new ViewHolder();
+			viewHolder.picUrlIV = (ImageView) view.findViewById(R.id.iv_product_image);
+			viewHolder.nameTV = (TextView) view.findViewById(R.id.tv_product_name);
+			viewHolder.priceTV = (TextView) view.findViewById(R.id.tv_product_price);
+			viewHolder.descOneTV = (TextView) view.findViewById(R.id.tv_product_activity_description);
+			viewHolder.productContainerLL = (RelativeLayout) view.findViewById(R.id.rl_product_container);
+			viewHolder.productOperatiorBtn = (TextView) view.findViewById(R.id.btn_product_operator);
+			viewHolder.netTypeTv = (TextView) view.findViewById(R.id.tv_product_netType);
+			view.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) view.getTag();
+		}
+
+		final ProductColorBean productBean = datas.get(position);
+
+		String picURL = productBean.getPic();
+		if (!TextUtils.isEmpty(picURL)) {
+			ImageLoader imageLoader = ImageLoader.getInstance();
+			viewHolder.picUrlIV.setImageDrawable(null);
+			imageLoader.displayImage(picURL, viewHolder.picUrlIV, mImageLoadingListener);
+		} else {
+			viewHolder.picUrlIV.setImageResource(R.drawable.no_picture);
+		}
+		// viewHolder.picUrlIV.setImageResource(pics[position]);
+		final String proModel = productBean.getProModel() == null ? "" : productBean.getProModel();
+		String proBrand = productBean.getProBrand() == null ? "" : productBean.getProBrand();
+		String proName = productBean.getProName() == null ? "" : productBean.getProName();
+		String proColor = productBean.getProColor() == null ? "" : productBean.getProColor();
+		String proRom = productBean.getProRom() == null ? "" : productBean.getProRom();
+		String proNetype = productBean.getProStandardName() == null ? "" : productBean.getProStandardName();
+
+		viewHolder.nameTV.setText(proModel + "" + proRom + " " + proColor);
+		viewHolder.netTypeTv.setText(proNetype);
+		String price = Utils.Money.MoneyToYuan(productBean.getProPrice());
+		viewHolder.priceTV.setText("￥" + price);
+		String desc = "";
+		String tempTypeString = null;
+		if (mJcode != null && mJcode.trim().length() > 0) {
+			if ("1".equals(productBean.getJcodeSellType())) {
+				tempTypeString = JCODE_BUY_NOW;
+				desc = mContext.getString(R.string.buy);
+			} else if ("2".equals(productBean.getJcodeSellType())) {
+				tempTypeString = JCODE_SELL_OUT;
+				desc = mContext.getString(R.string.sell_out);
+				viewHolder.productContainerLL.setEnabled(false);
+				viewHolder.productOperatiorBtn.setEnabled(false);
+			}
+		} else {
+			if ("0".equals(productBean.getSellType())) {
+				tempTypeString = GER_BOOK_NOW;
+				desc = mContext.getString(R.string.subscriber);
+			} else if ("1".equals(productBean.getSellType())) {
+				tempTypeString = GER_BUY_NOW;
+				desc = mContext.getString(R.string.buy);
+			} else if ("2".equals(productBean.getSellType())) {
+				tempTypeString = GER_SELL_OUT;
+				desc = mContext.getString(R.string.sell_out);
+				viewHolder.productContainerLL.setEnabled(false);
+				viewHolder.productOperatiorBtn.setEnabled(false);
+			}
+		}
+		final String mType = tempTypeString;
+		viewHolder.productOperatiorBtn.setText(desc);
+		viewHolder.descOneTV.setText(desc);
+		viewHolder.productOperatiorBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mProductOperatorListener != null) {
+					if (mType.equals(JCODE_BUY_NOW)) {
+						mProductOperatorListener.fMaBuy(position, productBean.getId());
+					} else if (mType.equals(GER_BOOK_NOW)) {
+						mProductOperatorListener.appointment(productBean.getId(), productBean.getAppointmentID());
+					} else if (mType.equals(GER_BUY_NOW)) {
+						mProductOperatorListener.gerBuy(position, productBean.getId());
+					}
+				} else {
+					ToastUtil.show(R.string.error_product_operator);
+				}
+			}
+		});
+
+		// viewHolder.descTwoTV.setText(productBean.getActivityDescription2());
+		/*
+		 * final RelativeLayout productContainerLL = viewHolder.productContainerLL; productContainerLL.setOnClickListener
+		 * (new View.OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) {
+		 * productContainerLL.setBackgroundResource(R.drawable.radiobottom_middle_noline_p); } });
+		 */
+
+		return view;
+	}
+
+	protected void bindBackground(View view, int i) {
+		if (getCount() == 1) {
+			view.setBackgroundResource(R.drawable.list_item_single_bg);
+			return;
+		}
+		if (i == 0) {
+			view.setBackgroundResource(R.drawable.list_item_top_bg);
+			return;
+		}
+		if (i == -1 + getCount()) {
+			view.setBackgroundResource(R.drawable.list_item_bottom_bg);
+			return;
+		} else {
+			view.setBackgroundResource(R.drawable.list_item_middle_bg);
+			return;
+		}
+	}
+
+	public void setOnProductOperatorListener(ProductOperatorListener listener) {
+		mProductOperatorListener = listener;
+	}
+
+	public static interface ProductOperatorListener {
+		void gerBuy(int position, int productId);
+
+		void appointment(int productId, String appointmentId);
+
+		void fMaBuy(int position, int productId);
+	}
+
+	private class ViewHolder {
+		ImageView picUrlIV;
+		TextView nameTV;
+		TextView priceTV;
+		TextView descOneTV;
+		RelativeLayout productContainerLL;
+		TextView productOperatiorBtn;
+		TextView netTypeTv;
+	}
+}

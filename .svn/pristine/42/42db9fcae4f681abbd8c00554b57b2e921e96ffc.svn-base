@@ -1,0 +1,121 @@
+package cn.digione.yibaic.shop.adapter;
+
+import java.util.List;
+
+import android.content.Intent;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.MainActivity;
+import cn.digione.yibaic.shop.acitvity.ProductListActivity;
+import cn.digione.yibaic.shop.bean.CategoryGoodsBean;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 14-3-6 Time: 下午2:39
+ */
+public class CategoryListAdapter extends BaseAdapter {
+	private MainActivity mContext;
+	private LayoutInflater mLayoutInflater;
+	private List<CategoryGoodsBean> datas;
+	private ImageLoadingListener mImageLoadingListener;
+
+	public CategoryListAdapter(MainActivity mContext, List<CategoryGoodsBean> datas) {
+		this.datas = datas;
+		this.mContext = mContext;
+		this.mLayoutInflater = LayoutInflater.from(mContext);
+		this.mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+	}
+
+	@Override
+	public int getCount() {
+		int count = 0;
+		if (datas != null && datas.size() > 0) {
+			count = datas.size();
+		}
+		return count;
+	}
+
+	@Override
+	public Object getItem(int position) {
+		Object object = null;
+		if (datas != null && datas.size() > 0) {
+			object = datas.get(position);
+		}
+		return object;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public View getView(int position, View view, ViewGroup parent) {
+		ViewHolder viewHolder = null;
+		if (viewHolder == null) {
+			viewHolder = new ViewHolder();
+			view = mLayoutInflater.inflate(R.layout.category_list_item, null);
+			viewHolder.categoryLL = (LinearLayout) view.findViewById(R.id.ll_category_container);
+			viewHolder.picUrlIV = (ImageView) view.findViewById(R.id.iv_category_goods_photo);
+			// viewHolder.categoryName = (TextView) view.findViewById(R.id.tv_category_name);
+			view.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) view.getTag();
+		}
+
+		final CategoryGoodsBean categoryGoods = datas.get(position);
+
+		viewHolder.categoryLL.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (categoryGoods.getIsV6() == 1) {// 标识为1，跳往专题页
+					mContext.goToHomePage();
+				} else {// 否则去详情
+					if (mContext.isLogin()) {
+						Intent intent = new Intent(mContext, ProductListActivity.class);
+						intent.putExtra("select_product_id", categoryGoods.getProId());
+						intent.putExtra("product_detail_title", categoryGoods.getClassName());
+						intent.setAction("index_detail_product");
+						mContext.startActivity(intent);
+
+					} else {
+						mContext.gotoLogin();
+					}
+				}
+			}
+		});
+
+		String picURL = categoryGoods.getClassPic();
+		if (!TextUtils.isEmpty(picURL)) {
+			ImageLoader imageLoader = ImageLoader.getInstance();
+			viewHolder.picUrlIV.setImageDrawable(null);
+			imageLoader.displayImage(picURL, viewHolder.picUrlIV, mImageLoadingListener);
+		} else {
+			viewHolder.picUrlIV.setImageResource(R.drawable.no_picture);
+		}
+		// viewHolder.categoryName.setText(categoryGoods.getClassName());
+		bindBackground(view);
+		return view;
+	}
+
+	protected void bindBackground(View view) {
+		// 间隔设计的较大，因此用single
+		view.setBackgroundResource(R.drawable.list_item_single_bg);
+
+	}
+
+	private class ViewHolder {
+		LinearLayout categoryLL;
+		ImageView picUrlIV;
+		// TextView categoryName;
+	}
+}

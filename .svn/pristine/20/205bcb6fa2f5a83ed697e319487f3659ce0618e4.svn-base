@@ -1,0 +1,49 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.io.Serializable;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: Simpson
+ * Date: 2014/4/13
+ * Time: 16:00
+ */
+public class OrderCouponJiaCoinOutBean implements Serializable {
+    private Integer preferentialAmt;
+    private Integer jiaCurrencyAmt;
+    private Integer orderAmount;
+
+    public OrderCouponJiaCoinOutBean() {
+
+    }
+
+    public OrderCouponJiaCoinOutBean(Integer preferentialAmt, Integer jiaCurrencyAmt, Integer orderAmount) {
+        this.preferentialAmt = preferentialAmt;
+        this.jiaCurrencyAmt = jiaCurrencyAmt;
+        this.orderAmount = orderAmount;
+    }
+
+    public Integer getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(Integer orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+
+    public Integer getPreferentialAmt() {
+        return preferentialAmt;
+    }
+
+    public void setPreferentialAmt(Integer preferentialAmt) {
+        this.preferentialAmt = preferentialAmt;
+    }
+
+    public Integer getJiaCurrencyAmt() {
+        return jiaCurrencyAmt;
+    }
+
+    public void setJiaCurrencyAmt(Integer jiaCurrencyAmt) {
+        this.jiaCurrencyAmt = jiaCurrencyAmt;
+    }
+}

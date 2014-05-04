@@ -1,0 +1,153 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.ShopApp;
+import cn.digione.yibaic.shop.acitvity.FMaBuyActivity;
+import cn.digione.yibaic.shop.acitvity.ProductListActivity;
+import cn.digione.yibaic.shop.bean.ProductDetailBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.Log;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import com.loopj.android.http.RequestParams;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 14-3-10 Time: 上午10:12
+ */
+public class ProductDetailsFragment extends BaseFragment {
+    private WebView mWebView;
+    private Button mFBuyOneBtn;
+    private Button mSubscribeBtn;
+    private LinearLayout mFSsubscribeContainerLL;
+    private ProgressBar mProgressBar;
+    private String mProductDetailUrl;
+    private ProductDetailBean mProductDetailBean = null;
+    private int mSelectProductId = -1;
+    private String mSelectProductModel;
+
+    public ProductListActivity getParent() {
+        return (ProductListActivity) getActivity();
+    }
+
+    public void requestHttp() {
+        HttpClient client = HttpClient.getInstall(getParent());
+        String url = Constants.NetWorkRequest.PRODUCT_DETAIL_URL_004;
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("productId", mSelectProductId + "");
+        map.put("searchProductVO.proModel", mSelectProductModel + "");
+        RequestParams params = new RequestParams(map);
+        client.postAsync(url, params, mCustomerJsonHttpResponseHandler);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            mSelectProductId = args.getInt("select_product_id");
+            mSelectProductModel = args.getString("select_product_model");
+        }
+        mSelectProductModel = mSelectProductModel == null ? "" : mSelectProductModel;
+
+        mCustomerJsonHttpResponseHandler = new CustomerJsonHttpResponseHandler<ProductDetailBean>(getParent(), false) {
+            @Override
+            public void processCallSuccess(ProductDetailBean outBean, String msg) {
+                if (outBean != null) {
+                    mProductDetailBean = outBean;
+                    mProductDetailUrl = mProductDetailBean.getProHTMLUrl();
+                    mWebView.loadUrl(mProductDetailUrl);
+                    if (mProductDetailBean.getSellType() == 0) {
+                        mSubscribeBtn.setText(getString(R.string.subscriber));
+                    } else {
+                        mSubscribeBtn.setText(getString(R.string.buy));
+                    }
+                }
+            }
+        };
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        getParent().setTitle(mSelectProductModel);
+        requestHttp();
+        Log.i("ProductId=" + mSelectProductId + ",ProductModel=" + mSelectProductModel);
+        View view = inflater.inflate(R.layout.product_details_fragment, container, false);
+        mFSsubscribeContainerLL = (LinearLayout) view.findViewById(R.id.ll_f_subscribe_container);
+        mProgressBar = new ProgressBar(getParent());
+        mWebView = (WebView) view.findViewById(R.id.wv_product_detail_desc);
+        if (mProductDetailUrl != null && !"".equals(mProductDetailBean)) {
+            mWebView.loadUrl(mProductDetailUrl);
+            Log.i("WebView URL:" + mProductDetailUrl);
+        }
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                ToastUtil.show("onPageStarted");
+                ShopApp.getInstance().showDialog(getActivity());
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                ToastUtil.show("onPageFinished");
+                ShopApp.getInstance().dismissDialog();
+            }
+        });
+
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        // mWebView.setWebChromeClient(new MyWebChromeClient());
+
+        mFBuyOneBtn = (Button) view.findViewById(R.id.btn_f_buy_btn);
+        mFBuyOneBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //getParent().showFragment("fmabuy_fragment", getArguments(), true);
+                Intent intent = new Intent(getActivity(), FMaBuyActivity.class);
+                intent.putExtra("select_product_model", mSelectProductModel);
+                intent.setAction("index_select_product");
+                startActivity(intent);
+            }
+        });
+        mSubscribeBtn = (Button) view.findViewById(R.id.btn_subscribe);
+        mSubscribeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParent().showFragment("color_select_fragment", getArguments(), true);
+            }
+        });
+        return view;
+    }
+
+	/*
+     * private class MyWebChromeClient extends WebChromeClient {
+	 * 
+	 * @Override public void onProgressChanged(WebView view, int newProgress) { super.onProgressChanged(view, newProgress);
+	 * getParent().setTitle("页面加载中，请稍候……" + newProgress + "%"); mProgressBar.setProgress(newProgress);
+	 * mProgressBar.postInvalidate(); if (newProgress == 100) { getParent().setTitle(R.string.app_name); } } }
+	 */
+}

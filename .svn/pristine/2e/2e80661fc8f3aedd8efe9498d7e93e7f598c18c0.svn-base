@@ -1,0 +1,87 @@
+package cn.digione.yibaic.shop.ui;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.BaseActivity;
+import cn.digione.yibaic.shop.adapter.ActivitiesListAdapter;
+import cn.digione.yibaic.shop.bean.ActivitiesBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import cn.digione.yibaic.shop.util.ToastUtil;
+import cn.digione.yibaic.shop.util.Utils;
+
+public class ActivitieListFragment extends BaseFragment {
+
+	private List<ActivitiesBean> activitiesList;
+	private ListView actListView;
+	private ActivitiesListAdapter actListAdapter;
+	private HttpClient client;
+	private View noActView;
+
+	public static ActivitieListFragment newInstance(String s) {
+		ActivitieListFragment newFragment = new ActivitieListFragment();
+		Bundle bundle = new Bundle();
+		newFragment.setArguments(bundle);
+		return newFragment;
+
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mCustomerJsonHttpResponseHandler = new CustomerJsonHttpResponseHandler<ArrayList<ActivitiesBean>>(getActivity()) {
+			@Override
+			public void processCallSuccess(ArrayList<ActivitiesBean> outBean, String msg) {
+
+				if (outBean != null && outBean.size() > 0) {
+					noActView.setVisibility(View.GONE);
+					activitiesList = outBean;
+					actListAdapter = null;
+					actListAdapter = new ActivitiesListAdapter((BaseActivity) getActivity(), activitiesList);
+					actListView.setAdapter(actListAdapter);
+				} else {
+					noActView.setVisibility(View.VISIBLE);
+				}
+			}
+			@Override
+			public void processCallFailure(ArrayList<ActivitiesBean> outBean, String failureCode, String msg) {
+				// TODO Auto-generated method stub
+				super.processCallFailure(outBean, failureCode, msg);
+				noActView.setVisibility(View.VISIBLE);
+			}
+		};
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.activitis_fragment, container, false);
+		actListView = (ListView) view.findViewById(R.id.activities_lisview);
+		noActView = view.findViewById(R.id.no_activities_view);
+		if (Utils.Network.isHasNetwork(getActivity())) {
+			String url = Constants.NetWorkRequest.ACTIVITIES_LIST_URL_022;
+			if (client == null) {
+				client = HttpClient.getInstall(getActivity());
+			}
+			client.postAsync(url, null, mCustomerJsonHttpResponseHandler);
+		} else {
+			ToastUtil.show(getActivity(), getString(R.string.msg_network_fail), ToastUtil.LENGTH_SHORT);
+		}
+		return view;
+
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
+
+}

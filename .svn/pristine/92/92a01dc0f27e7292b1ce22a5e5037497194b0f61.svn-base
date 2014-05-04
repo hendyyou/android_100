@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<LinearLayout
+		android:orientation="vertical"
+		android:id="@+id/ll_edit_cart_item_pic_container"
+		android:layout_alignParentTop="true"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+	   <ImageView
+		   android:id="@+id/iv_edit_cart_item_pic"
+		   android:focusable="false"
+		   android:clickable="false"
+		   android:layout_width="fill_parent"
+		   android:layout_height="fill_parent"
+		   android:layout_marginRight="7.0dip"
+		   android:src="@drawable/empty_cartlist"
+		   android:scaleType="fitXY" />
+	</LinearLayout>
+    <LinearLayout
+	    android:orientation="vertical"
+	    android:id="@+id/ll_edit_cart_item_text_container"
+	    android:layout_alignParentBottom="true"
+	    android:layout_marginBottom="20dip"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+        <RelativeLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10.0dip"
+	        android:layout_marginTop="10.0dip"
+	        android:layout_marginRight="20.0dip"
+	        android:layout_marginBottom="5.0dip"
+	        style="@style/Widget.Item.ListView.DoubleLine">
+            <TextView
+	            android:textColor="@color/primary_text_color"
+	            android:ellipsize="end"
+	            android:id="@+id/tv_edit_cart_product_title"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:singleLine="true"
+	            android:layout_alignParentLeft="true"
+	            android:layout_centerVertical="true"
+	            style="@style/TextAppearance.Large" />
+
+            <TextView
+	            android:textColor="@color/highlight_text_color"
+	            android:id="@+id/tv_edit_cart_price"
+	            android:layout_alignParentRight="true"
+	            android:layout_centerVertical="true"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="$6855"
+	            style="@style/TextAppearance.Large" />
+        </RelativeLayout>
+        <LinearLayout
+	        android:gravity="center_vertical"
+	        android:id="@+id/adapt_phone_container"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10.0dip"
+	        android:layout_marginRight="10.0dip"
+	        android:layout_marginBottom="5.0dip">
+            <TextView
+	            android:textColor="@color/highlight_text_color_inverse"
+	            android:id="@+id/tv_adapt_phone_label"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginRight="2.0dip"
+	            android:text="@string/adapt_phone"
+	            style="@style/TextAppearance.Normal" />
+        </LinearLayout>
+        <LinearLayout
+	        android:gravity="center_vertical"
+	        android:id="@+id/ll_edit_cart_op_container"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10.0dip"
+	        android:layout_marginTop="10.0dip"
+	        android:layout_marginRight="10.0dip">
+            <Spinner
+	            android:id="@+id/sp_edit_cart_number"
+	            android:layout_width="0.0dip"
+	            android:layout_marginRight="5.0dip"
+	            android:prompt="@string/can_buy_max_count"
+	            android:layout_weight="3.0"
+	            style="@style/Widget.Spinner" />
+            <Button
+	            android:id="@+id/btn_delete_cart_item"
+	            android:layout_width="0.0dip"
+	            android:text="@string/edit_cart_item_button_delete"
+	            android:layout_weight="1.0"
+	            style="@style/Widget.Button.Main.Shop" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,64 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.io.Serializable;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: youzh
+ * Date: 14-3-11
+ * Time: 上午11:02
+ */
+public class ShoppingCartItemBean implements Serializable {
+
+    private static final long serialVersionUID = -8471565502826654721L;
+
+    private String picURl;
+
+    private String productName;
+
+    private double price;
+
+    private int count;
+
+    private double subTotalPrice;
+
+    public String getPicURl() {
+        return picURl;
+    }
+
+    public void setPicURl(String picURl) {
+        this.picURl = picURl;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public double getSubTotalPrice() {
+        return subTotalPrice;
+    }
+
+    public void setSubTotalPrice(double subTotalPrice) {
+        this.subTotalPrice = subTotalPrice;
+    }
+}

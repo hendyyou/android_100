@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	android:paddingBottom="@dimen/home_cellspacing"
+	android:background="@drawable/product_item_bg"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	style="@style/Widget.Item.ListView"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<RelativeLayout
+		android:orientation="horizontal"
+		android:id="@+id/rl_appointment_container"
+		android:layout_width="fill_parent"
+		android:layout_height="125.0dip">
+
+		<ImageView
+			android:id="@+id/iv_appointment_image"
+			android:paddingLeft="5.0dip"
+			android:paddingRight="5.0dip"
+			android:paddingBottom="5.0dip"
+			android:focusable="false"
+			android:clickable="false"
+			android:layout_width="105.0dip"
+			android:layout_height="105.0dip"
+			android:scaleType="fitXY"
+			android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+			android:contentDescription="@null" />
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:id="@+id/tv_appointment_text_container"
+			android:paddingTop="6.0dip"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/iv_appointment_image"
+			android:layout_centerVertical="true">
+
+			<TextView
+				android:gravity="center"
+				android:id="@+id/tv_appointment_product"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="@style/TextAppearance.List.Large" />
+
+			<TextView
+				android:gravity="center"
+				android:id="@+id/tv_appointment_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/TextAppearance.Small" />
+
+			<TextView
+				android:textColor="@color/highlight_text_color"
+				android:gravity="center"
+				android:id="@+id/tv_appointment_time"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="@style/TextAppearance.Small" />
+
+			<TextView
+				android:textColor="@color/secondary_text_color"
+				android:id="@+id/tv_appointment_rbstarttime"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				style="@style/TextAppearance.Small" />
+
+			<TextView
+				android:textColor="@color/secondary_text_color"
+				android:id="@+id/tv_appointment_rbendtime"
+				android:layout_width="match_parent"
+				android:visibility="gone"
+				android:layout_height="wrap_content"
+				style="@style/TextAppearance.Small" />
+
+			<TextView
+				android:textColor="@color/secondary_text_color"
+				android:id="@+id/tv_appointment_description"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:visibility="gone"
+				android:singleLine="true"
+				style="@style/TextAppearance.Small" />
+		</LinearLayout>
+	</RelativeLayout>
+
+	<FrameLayout
+		android:id="@+id/fl_buy_operation_container"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/rl_appointment_container">
+		<Button
+			android:id="@+id/btn_appointment_buy"
+			android:background="@drawable/btn_productlist_bg"
+			android:layout_width="fill_parent"
+			android:layout_height="45.0dip"
+			style="@style/Widget.Button" />
+	</FrameLayout>
+</RelativeLayout>

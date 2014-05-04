@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="update_config_url">http://test20.100jia.cn/apk_download/apk_100jia_client_update.xml</string>
+	<string name="debug">true</string>
+	<string name="data_base_url">http://test20.100jia.cn/servicehost/jsonrest/android/</string>
+	<!--<string name="data_base_url">http://192.168.2.51:9080/jsonrest/android/</string>  -->
+</resources>

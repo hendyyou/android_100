@@ -1,0 +1,21 @@
+package cn.digione.yibaic.shop.bean;
+
+import java.io.Serializable;
+
+/**
+ * Created with IntelliJ IDEA.
+ * User: Simpson
+ * Date: 2014/4/13
+ * Time: 16:00
+ */
+public class OrderCouponJiaCoinOutBean implements Serializable {
+    private int orderAmount;
+
+    public int getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(int orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+}

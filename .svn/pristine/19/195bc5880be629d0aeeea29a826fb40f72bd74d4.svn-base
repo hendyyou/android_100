@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_margin="10dp">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		style="@style/TextAppearance.List.Primary"
+		android:text="@string/f_ma_buy_hint" />
+
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:id="@+id/et_f_ma_input"
+		android:hint="@string/f_ma_buy_input_hint"
+		style="@style/Widget.EditText" />
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:id="@+id/tv_f_ma_obtain" />
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+
+		<TextView
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+
+		<Button
+			android:gravity="center"
+			android:id="@+id/btn_f_ma_submit"
+			android:text="@string/submit"
+			android:layout_marginTop="10dp"
+			android:layout_width="0dip"
+			android:layout_weight="4"
+			style="@style/Widget.Button.Main" />
+
+		<TextView
+			android:layout_width="0dip"
+			android:layout_height="wrap_content"
+			android:layout_weight="1" />
+	</LinearLayout>
+
+</LinearLayout>

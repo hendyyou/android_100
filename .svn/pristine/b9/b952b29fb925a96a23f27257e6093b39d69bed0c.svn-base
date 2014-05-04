@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="update_config_url">http://test20.100jia.cn/apk_download/apk_100jia_client_update.xml</string>
+	<string name="debug">true</string>
+	<!--<string name="data_base_url">http://test20.100jia.cn/servicehost/jsonrest/android/</string>-->
+	<string name="data_base_url">http://192.168.2.51:9080/jsonrest/android/</string>
+	<string name="wx_pay_get_token"
+			formatted="false">https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&#38;appid=%1$s&#38;secret=%2$s</string>
+	<string name="wx_pay_gen_prepay" formatted="false">https://api.weixin.qq.com/pay/genprepay?access_token=%s</string>
+</resources>

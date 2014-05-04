@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<LinearLayout
+		android:layout_alignParentTop="true"
+		android:id="@+id/ll_product_detail_desc_container"
+		android:layout_width="fill_parent"
+		android:layout_height="match_parent">
+
+		<WebView
+			android:layout_width="fill_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/wv_product_detail_desc" />
+	</LinearLayout>
+
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:id="@+id/ll_f_subscribe_container"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:background="@drawable/productlist_btn_bg_n">
+
+	<Button
+			android:id="@+id/btn_f_buy_btn"
+			android:layout_width="0.0dip"
+			android:layout_height="45.0dip"
+			android:layout_weight="2"
+			android:text="@string/f_buy"
+			style="@style/Widget.Button.Main" />
+
+		<Button
+			android:id="@+id/btn_subscribe"
+			android:layout_width="0.0dip"
+			android:layout_height="45.0dip"
+			android:layout_weight="3"
+			android:text="@string/subscriber"
+			style="@style/Widget.Button.Main" />
+	</LinearLayout>
+</RelativeLayout>

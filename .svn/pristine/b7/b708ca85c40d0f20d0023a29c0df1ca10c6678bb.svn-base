@@ -1,0 +1,177 @@
+package cn.digione.yibaic.shop.adapter;
+
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.ProductListActivity;
+import cn.digione.yibaic.shop.bean.ProductBean;
+import cn.digione.yibaic.shop.http.DisplayImageOptionsForCustom;
+import cn.digione.yibaic.shop.util.Utils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+
+import java.util.List;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 14-3-6 Time: 下午2:39
+ */
+public class ProductListAdapter extends BaseAdapter {
+    private ProductListActivity mContext;
+    private LayoutInflater mLayoutInflater;
+    private List<ProductBean> datas;
+    private ImageLoadingListener mImageLoadingListener;
+    private Bundle mBundle;
+
+    public ProductListAdapter(ProductListActivity context, List<ProductBean> datas, Bundle bundle) {
+        this.datas = datas;
+        this.mContext = context;
+        this.mLayoutInflater = LayoutInflater.from(mContext);
+        this.mImageLoadingListener = DisplayImageOptionsForCustom.getImageLoadingListener();
+        this.mBundle = bundle;
+    }
+
+    @Override
+    public int getCount() {
+        int count = 0;
+        if (datas != null && datas.size() > 0) {
+            count = datas.size();
+        }
+        return count;
+    }
+
+    @Override
+    public Object getItem(int position) {
+        Object object = null;
+        if (datas != null && datas.size() > 0) {
+            object = datas.get(position);
+        }
+        return object;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View view, ViewGroup parent) {
+        ViewHolder viewHolder = null;
+        if (viewHolder == null) {
+            view = mLayoutInflater.inflate(R.layout.product_list_item, null);
+            viewHolder = new ViewHolder();
+            viewHolder.picUrlIV = (ImageView) view.findViewById(R.id.iv_product_image);
+            viewHolder.nameTV = (TextView) view.findViewById(R.id.tv_product_name);
+            viewHolder.priceTV = (TextView) view.findViewById(R.id.tv_product_price);
+            viewHolder.descOneTV = (TextView) view.findViewById(R.id.tv_product_activity_description);
+            viewHolder.descTwoTV = (TextView) view.findViewById(R.id.tv_product_activity_description2);
+            viewHolder.immdBuyBtn = (Button) view.findViewById(R.id.btn_immd_buy_btn);
+            viewHolder.fbuyBtn = (Button) view.findViewById(R.id.btn_f_buy_btn);
+            viewHolder.subsciterBtn = (Button) view.findViewById(R.id.btn_subsciter_btn);
+            viewHolder.buyContainerLL = (LinearLayout) view.findViewById(R.id.ll_buy_container);
+            viewHolder.productContainerRL = (RelativeLayout) view.findViewById(R.id.rl_product_container);
+            viewHolder.buyOperationContainerFL = (FrameLayout) view.findViewById(R.id.fl_buy_operation_container);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
+        }
+
+        final ProductBean productBean = datas.get(position);
+
+        String picURL = productBean.getPic();
+        if (!TextUtils.isEmpty(picURL)) {
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            viewHolder.picUrlIV.setImageDrawable(null);
+            imageLoader.displayImage(picURL, viewHolder.picUrlIV, mImageLoadingListener);
+        } else {
+            viewHolder.picUrlIV.setImageResource(R.drawable.no_picture);
+        }
+        final String proModel = productBean.getProModel() == null ? "" : productBean.getProModel();
+        final String proBrand = productBean.getProBrand() == null ? "" : productBean.getProBrand();
+        final String proName = productBean.getProName() == null ? "" : productBean.getProName();
+        final String proRom = productBean.getProRom() == null ? "" : productBean.getProRom();
+        final String proVersion = productBean.getProVersion() == null ? "" : productBean.getProVersion();
+        viewHolder.nameTV.setText(proName + " " + proVersion + " " + proRom);
+        String price = Utils.Money.MoneyToYuan( productBean.getProPrice());
+        viewHolder.priceTV.setText("￥"+ price);
+        viewHolder.descOneTV.setText(productBean.getProDesc());
+        // viewHolder.descTwoTV.setText(productBean.getActivityDescription2());
+        viewHolder.descTwoTV.setVisibility(View.GONE);
+        viewHolder.immdBuyBtn.setText(mContext.getString(R.string.immd_buy));
+        viewHolder.fbuyBtn.setText(mContext.getString(R.string.f_buy));
+        viewHolder.fbuyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                mContext.showFragment("fmabuy_fragment", bundle, true);
+            }
+        });
+        viewHolder.subsciterBtn.setText(mContext.getString(R.string.subsciter));
+        viewHolder.immdBuyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("select_product_model", proModel);
+                mContext.showFragment("color_select_fragment", bundle, true);
+            }
+        });
+
+        if (position % 2 == 0) {
+            viewHolder.buyContainerLL.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.buyContainerLL.setVisibility(View.GONE);
+        }
+
+        viewHolder.productContainerRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("category_id", mBundle.getInt("category_id"));
+                bundle.putString("category_name", mBundle.getString("category_name"));
+                bundle.putInt("select_product_id", productBean.getId());
+                bundle.putString("select_product_version", proVersion);
+                bundle.putString("select_product_name", proName);
+                bundle.putString("select_product_model", proModel);
+                bundle.putString("select_product_rom", proRom);
+                bundle.putString("select_product_brand", proBrand);
+                mContext.showFragment("product_details_fragment", bundle, true);
+            }
+        });
+        return view;
+    }
+
+    protected void bindBackground(View view, int i) {
+        if (getCount() == 1) {
+            view.setBackgroundResource(R.drawable.list_item_single_bg);
+            return;
+        }
+        if (i == 0) {
+            view.setBackgroundResource(R.drawable.list_item_top_bg);
+            return;
+        }
+        if (i == -1 + getCount()) {
+            view.setBackgroundResource(R.drawable.list_item_bottom_bg);
+            return;
+        } else {
+            view.setBackgroundResource(R.drawable.list_item_middle_bg);
+            return;
+        }
+    }
+
+    private class ViewHolder {
+        ImageView picUrlIV;
+        TextView nameTV;
+        TextView priceTV;
+        TextView descOneTV;
+        TextView descTwoTV;
+        Button immdBuyBtn;
+        Button fbuyBtn;
+        Button subsciterBtn;
+        LinearLayout buyContainerLL;
+        RelativeLayout productContainerRL;
+        FrameLayout buyOperationContainerFL;
+    }
+}

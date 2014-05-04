@@ -1,0 +1,125 @@
+package cn.digione.yibaic.shop.ui;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ListView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.acitvity.OrderListActivity;
+import cn.digione.yibaic.shop.acitvity.ShoppingActivity;
+import cn.digione.yibaic.shop.adapter.AppointmentAdapter;
+import cn.digione.yibaic.shop.bean.BookBean;
+import cn.digione.yibaic.shop.bean.JsonNoneOutBean;
+import cn.digione.yibaic.shop.bean.RequestErrorBean;
+import cn.digione.yibaic.shop.common.Constants;
+import cn.digione.yibaic.shop.http.CustomerJsonHttpResponseHandler;
+import cn.digione.yibaic.shop.http.HttpClient;
+import com.loopj.android.http.RequestParams;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created with IntelliJ IDEA. User: youzh Date: 2014/3/28 Time: 15:46
+ */
+public class BookFragment extends BaseFragment<List<BookBean>> implements AppointmentAdapter.BtnOnClickListener {
+
+	CustomerJsonHttpResponseHandler<JsonNoneOutBean> mAddShopCartHttpResponseHandler;
+	private ListView mAppointmentListLV;
+	private List<BookBean> mDatas;
+	private ImageView noBookView;
+	private AppointmentAdapter mAppointmentAdapter;
+
+	public OrderListActivity getParent() {
+		return (OrderListActivity) getActivity();
+	}
+
+	public void requestHttp() {
+		HttpClient client = HttpClient.getInstall(getParent());
+		String url = Constants.NetWorkRequest.SEARCH_USER_APPOINTMENT_LIST_URL_040;
+		client.postAsync(url, null, mCustomerJsonHttpResponseHandler);
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getParent().setHomeButtonEnable(true);
+		mCustomerJsonHttpResponseHandler = new CustomerJsonHttpResponseHandler<List<BookBean>>(getParent(), false) {
+			@Override
+			public void processCallSuccess(List<BookBean> outBean, String msg) {
+				if (outBean != null && outBean.size() > 0) {
+					noBookView.setVisibility(View.GONE);
+					mDatas = outBean;
+					mAppointmentAdapter = new AppointmentAdapter(getParent(), mDatas, BookFragment.this);
+					mAppointmentListLV.setAdapter(mAppointmentAdapter);
+					mAppointmentListLV.setSelection(mSelectposition);
+				} else {
+					noBookView.setVisibility(View.VISIBLE);
+				}
+			}
+
+			@Override
+			public void processHttpFailure(Throwable e, RequestErrorBean outBean) {
+				// TODO Auto-generated method stub
+				super.processHttpFailure(e, outBean);
+				noBookView.setVisibility(View.VISIBLE);
+			}
+		};
+		mAddShopCartHttpResponseHandler = new CustomerJsonHttpResponseHandler<JsonNoneOutBean>(getParent(), false) {
+			@Override
+			public void processCallSuccess(JsonNoneOutBean outBean, String msg) {
+				Intent intent = new Intent(getActivity(), ShoppingActivity.class);
+				startActivity(intent);
+			}
+		};
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);		
+		View view = inflater.inflate(R.layout.book_fragment, container, false);
+		mAppointmentListLV = (ListView) view.findViewById(R.id.lv_appointment_list);
+		noBookView = (ImageView) view.findViewById(R.id.no_book_view);
+		return view;
+	}
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		requestHttp();
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+	}
+
+	public void buyRequestHttp(String url, Map<String, String> map, CustomerJsonHttpResponseHandler httpResponseHandler) {
+
+		// requestHttp(url, map, mAddShopCartHttpResponseHandler);
+	}
+
+	@Override
+	public void prepay(String proId) {
+		Intent intent = new Intent(getActivity(), ShoppingActivity.class);
+		intent.putExtra("jcode_product_id", proId);
+		intent.putExtra("is_prepaid", "is_prepaid");
+		intent.setAction("index_select_product");
+		startActivity(intent);
+	}
+
+	@Override
+	public void buy(String proId) {
+		HttpClient client = HttpClient.getInstall(getParent());
+		String url = Constants.NetWorkRequest.SHOPPING_ADD_CART_URL_031;
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("productId", proId);
+		map.put("num", "1");
+		RequestParams params = new RequestParams(map);
+		client.postAsync(url, params, mAddShopCartHttpResponseHandler);
+	}
+}

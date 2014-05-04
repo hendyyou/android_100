@@ -1,0 +1,234 @@
+package cn.digione.yibaic.shop.acitvity;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import cn.digione.yibaic.shop.R;
+import cn.digione.yibaic.shop.ShopApp;
+import cn.digione.yibaic.shop.adapter.MainFragmentPagerAdapter;
+import cn.digione.yibaic.shop.ui.ActivitieListFragment;
+import cn.digione.yibaic.shop.ui.CategoryFragment;
+import cn.digione.yibaic.shop.ui.HomeFragment;
+import cn.digione.yibaic.shop.ui.ServiceFragment;
+import cn.digione.yibaic.shop.util.Log;
+
+import java.util.ArrayList;
+
+/**
+
+ */
+public class MainActivity extends BaseActivity {
+	private static final String TAG = "MainActivity";
+	private ViewPager mPager;
+	private ArrayList<Fragment> fragmentsList;
+    private LinearLayout llBottomLine;
+    private TextView tvHotTab, tvClassifyTab, tvActivitiesTab, tvServiceTab;
+
+	private int currIndex = 0;
+	private int bottomLineWidth;
+	private int offset = 0;
+	private int position_one;
+	private int position_two;
+	private int position_three;
+	private Resources resources;
+	private AlertDialog alertDialog;
+
+    public static void launchMain(Context context, String s) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("shop.extra_go_to_fragment", s);
+        context.startActivity(intent);
+    }
+
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setCustomContentView(R.layout.main);
+        resources = getResources();
+        InitWidth();
+        InitTextView();
+        InitViewPager();
+        setTitleBottomLineView(true);
+    }
+
+	private void InitTextView() {
+        tvHotTab = (TextView) findViewById(R.id.tv_tab_hot);
+        tvClassifyTab = (TextView) findViewById(R.id.tv_tab_classify);
+        tvActivitiesTab = (TextView) findViewById(R.id.tv_tab_activities);
+        tvServiceTab = (TextView) findViewById(R.id.tv_tab_service);
+
+        tvHotTab.setOnClickListener(new MyOnClickListener(0));
+        tvClassifyTab.setOnClickListener(new MyOnClickListener(1));
+        tvActivitiesTab.setOnClickListener(new MyOnClickListener(2));
+        tvServiceTab.setOnClickListener(new MyOnClickListener(3));
+    }
+
+    private void InitViewPager() {
+        mPager = (ViewPager) findViewById(R.id.vp_main);
+        fragmentsList = new ArrayList<Fragment>();
+
+        Fragment homeFragment = HomeFragment.newInstance("home_fragment");
+        Fragment classifyFragment = CategoryFragment.newInstance("category_fragment");
+        Fragment activitiesFragment = ActivitieListFragment.newInstance("activities_fragment");
+        Fragment serviceFragment = ServiceFragment.newInstance("service_fragment");
+
+        fragmentsList.add(homeFragment);
+        fragmentsList.add(classifyFragment);
+        fragmentsList.add(activitiesFragment);
+        fragmentsList.add(serviceFragment);
+
+        mPager.setAdapter(new MainFragmentPagerAdapter(getSupportFragmentManager(), fragmentsList));
+        mPager.setCurrentItem(0);
+        mPager.setOnPageChangeListener(new MyOnPageChangeListener());
+    }
+
+	public void goToHomePage(){
+        mPager.setCurrentItem(0);
+    }
+
+    private void InitWidth() {
+        llBottomLine = (LinearLayout) findViewById(R.id.ll_bottom_line);
+        // 手机的分辨率、长、宽
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int screenW = dm.widthPixels;
+        // 图片的长度
+        llBottomLine.getLayoutParams().width = screenW / 4;
+        Log.d("cursor imageview width=" + bottomLineWidth);
+
+        // 计算图片的开始位置
+        // offset = (int) ((screenW / 4.0 - bottomLineWidth) / 2);
+        offset = (screenW / 4 - bottomLineWidth) / 2;// 计算偏移量
+        Log.i("offset=" + offset);
+
+        position_one = offset * 2 + bottomLineWidth;// 页卡1 -> 页卡2 偏移量
+        position_two = position_one * 2;// 页卡1 -> 页卡3 偏移量
+        position_three = position_one * 3;
+    }
+
+	@Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.app_exit));
+        builder.setMessage(getString(R.string.confirm_exit));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface mDialogInterface, int which) {
+                ShopApp.getInstance().appExit(MainActivity.this);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface mDialogInterface, int which) {
+                if (alertDialog != null) {
+                    alertDialog.dismiss();
+                }
+            }
+        });
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public class MyOnClickListener implements View.OnClickListener {
+        private int index = 0;
+
+        public MyOnClickListener(int i) {
+            index = i;
+        }
+
+        @Override
+        public void onClick(View v) {
+            mPager.setCurrentItem(index);
+        }
+    }
+
+    public class MyOnPageChangeListener implements OnPageChangeListener {
+
+		@Override
+		public void onPageSelected(int page) {
+			Animation animation = null;
+			switch (page) {
+			case 0:
+				if (currIndex == 1) {
+					// animation = new TranslateAnimation(position_one, 0, 0, 0);
+					tvClassifyTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 2) {
+					// animation = new TranslateAnimation(position_two, 0, 0, 0);
+					tvActivitiesTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 3) {
+					// animation = new TranslateAnimation(position_three, 0, 0, 0);
+					tvServiceTab.setTextColor(resources.getColor(R.color.lightwhite));
+				}
+				tvHotTab.setTextColor(resources.getColor(R.color.white));
+				break;
+			case 1:
+				if (currIndex == 0) {
+					// animation = new TranslateAnimation(0, position_one, 0, 0);
+					tvHotTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 2) {
+					// animation = new TranslateAnimation(position_two, position_one, 0, 0);
+					tvActivitiesTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 3) {
+					// animation = new TranslateAnimation(position_three, position_one, 0, 0);
+					tvServiceTab.setTextColor(resources.getColor(R.color.lightwhite));
+				}
+				tvClassifyTab.setTextColor(resources.getColor(R.color.white));
+				break;
+			case 2:
+				if (currIndex == 0) {
+					// animation = new TranslateAnimation(0, position_two, 0, 0);
+					tvHotTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 1) {
+					// animation = new TranslateAnimation(position_one, position_two, 0, 0);
+					tvClassifyTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 3) {
+					// animation = new TranslateAnimation(position_three, position_two, 0, 0);
+					tvServiceTab.setTextColor(resources.getColor(R.color.lightwhite));
+				}
+				tvActivitiesTab.setTextColor(resources.getColor(R.color.white));
+				break;
+			case 3:
+				if (currIndex == 0) {
+					// animation = new TranslateAnimation(0, position_three, 0, 0);
+					tvHotTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 1) {
+					// animation = new TranslateAnimation(position_one, position_three, 0, 0);
+					tvClassifyTab.setTextColor(resources.getColor(R.color.lightwhite));
+				} else if (currIndex == 2) {
+					// animation = new TranslateAnimation(position_two, position_three, 0, 0);
+					tvActivitiesTab.setTextColor(resources.getColor(R.color.lightwhite));
+				}
+				tvServiceTab.setTextColor(resources.getColor(R.color.white));
+				break;
+			}
+			animation = new TranslateAnimation(position_one * currIndex, position_one * page, 0, 0);
+			currIndex = page;
+			animation.setFillAfter(true);// True:图片停在动画结束位置
+			animation.setDuration(300);
+            llBottomLine.startAnimation(animation);
+        }
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+		}
+	}
+}

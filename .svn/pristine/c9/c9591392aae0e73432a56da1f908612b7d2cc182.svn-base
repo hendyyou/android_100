@@ -1,0 +1,122 @@
+package cn.digione.yibaic.shop.bean;
+
+public class CheckoutFormInfo {
+    private String mAddressId;
+    private String mBestTimeId;
+    //private ShoppingCartListInfo mCart;
+    private String mCouponCode;
+    private String mCouponType;
+    private String mInvoiceTitle;
+    private String mInvoiceType;
+    private String mBuyConsignee;
+    private String mBuyId;
+    private String mBuyTel;
+    private String mPayId;
+    private String mPickupId;
+    private String mShipmentId;
+
+    public String getAddressId() {
+        return mAddressId;
+    }
+
+    public String getBestTimeId() {
+        return mBestTimeId;
+    }
+
+/*	public ShoppingCartListInfo getCart() {
+        return mCart;
+	}*/
+
+    public String getCouponCode() {
+        return mCouponCode;
+    }
+
+    public String getCouponType() {
+        return mCouponType;
+    }
+
+    public String getInvoiceTitle() {
+        return mInvoiceTitle;
+    }
+
+    public String getInvoiceType() {
+        return mInvoiceType;
+    }
+
+    public String getBuyConsignee() {
+        return mBuyConsignee;
+    }
+
+    public String getBuyId() {
+        return mBuyId;
+    }
+
+    public String getBuyTel() {
+        return mBuyTel;
+    }
+
+    public String getPayId() {
+        return mPayId;
+    }
+
+    public String getPickupId() {
+        return mPickupId;
+    }
+
+    public String getShipmentId() {
+        return mShipmentId;
+    }
+
+    public void setAddressId(String s) {
+        mAddressId = s;
+    }
+
+    public void setBestTimeId(String s) {
+        mBestTimeId = s;
+    }
+
+	/*void void setCart(ShoppingCartListInfo shoppingcartlistinfo) {
+		mCart = shoppingcartlistinfo;
+	}*/
+
+    public void setCouponCode(String s) {
+        mCouponCode = s;
+    }
+
+    public void setCouponType(String s) {
+        mCouponType = s;
+    }
+
+    public void setInvoiceTitle(String s) {
+        mInvoiceTitle = s;
+    }
+
+    public void setInvoiceType(String s) {
+        mInvoiceType = s;
+    }
+
+    public void setBuyConsignee(String s) {
+        mBuyConsignee = s;
+    }
+
+    public void setBuyId(String s) {
+        mBuyId = s;
+    }
+
+    public void setBuyTel(String s) {
+        mBuyTel = s;
+    }
+
+    public void setPayId(String s) {
+        mPayId = s;
+    }
+
+    public void setPickupId(String s) {
+        mPickupId = s;
+    }
+
+    public void setShipmentId(String s) {
+        mShipmentId = s;
+    }
+
+}

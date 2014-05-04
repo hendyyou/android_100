@@ -1,0 +1,180 @@
+package cn.digione.yibaic.shop.common;
+
+public final class Constants {
+    /**
+     * 日志标识：common_android
+     */
+    public static final String TAG = "100Cshop";
+    public static final String API_KEY = "de1HkBT2IAPsKs0G0VzecoGG";
+    public static final String APP_ID = "2423076";
+    public static final String SECRET_KEY = "lg5yIId5Kyb97mAkW5v8zeF7eoie8Fjt";
+    public static final String ACCOUNT_TYPE = "com.baidu";
+
+    /**
+     * 1:表示售罄
+     */
+    public static final int IS_SOLDOUT_YES = 1;
+
+    /**
+     * 0:表示售罄
+     */
+    public static final int IS_SOLDOUT_NO = 0;
+
+    /***************************************************************************************/
+    /**
+     * 接口返回的code定义
+     */
+    public static final class IntfMsgCode {
+        /**
+         * 后台返回msgCode，没有提示：0
+         */
+        public static final int NOTIPS = 0;
+        /**
+         * 后台返回msgCode，成功：1
+         */
+        public static final int SUCCESS = 1;
+        /**
+         * 后台返回msgCode，失败：2
+         */
+        public static final int FAILURE = 2;
+        /**
+         * 后台返回msgCode，超时：3
+         */
+        public static final int TIMEOUT = 3;
+
+    }
+
+    public  static  final  class ShopCartOrder{
+        //收货人姓名
+        public final static String ORDER_CONSIGNEE ="orderVO.consignee";
+        //收货人地址
+        public final static String ORDER_CONSIGNEEADDRESS="orderVO.consigneeAddress";
+        //收货人手机号码
+        public final static String ORDER_CONSIGNEEMOBILE ="orderVO.consigneeMobile";
+        //收货人电话
+        public final static String ORDER_CONSIGNEEPHONE ="orderVO.consigneePhone";
+        //收货人邮编
+        public final static String ORDER_CONSIGNEEPOSTCODE ="orderVO.consigneePostcode";
+        /**
+        *收货人配送方式（1:周一至周五可配送，2:周一至周五、周末均可配送，3:仅周末配送，4:仅限白天配送）
+         */
+        public final static String ORDER_DELIVERYPERIOD ="orderVO.deliveryPeriod";
+        /**
+         * 收货人发票类型(0:不需要发票，1：普通发票)
+         */
+        public final static String ORDER_ISINVOICE ="orderVO.isInvoice";
+        /**
+         * 收货人发票抬头
+         */
+        public final static String ORDER_INVOICETITLE ="orderVO.invoiceTitle";
+
+        public final static String ORDER_PAYMENT ="orderVO.paymentType";
+    }
+
+    /***************************************************************************************/
+    /**
+     * 数据文件名称定义
+     */
+    public static final class DataFile {
+        /**
+         * 用于记录客户端公用信息的文件名：common_info
+         */
+        public static final String COMMON_INFO = "common_info";
+
+        /**
+         * 记录客户端公用信息common_info的key定义
+         */
+        public static final class CommonInfoKey {
+            /**
+             * 用于记录发起手机翼支付的订单ID：FOR_BESTPAY_ORDER_ID
+             */
+            public static final String FOR_BESTPAY_ORDER_ID = "FOR_BESTPAY_ORDER_ID";
+            /**
+             * 品牌key：BRAND_DATA
+             */
+            public static final String BRAND_DATA = "BRAND_DATA";
+            /**
+             * 网络类型key：NET_TYPE_DATA
+             */
+            public static final String NET_TYPE_DATA = "NET_TYPE_DATA";
+            /**
+             * 操作系统key：OS_DATA
+             */
+            public static final String OS_DATA = "OS_DATA";
+            /**
+             * 价格区间key：PRICE_DATA
+             */
+            public static final String PRICE_DATA = "PRICE_DATA";
+            /**
+             * 屏幕大小key：SCREEN_DATA
+             */
+            public static final String SCREEN_DATA = "SCREEN_DATA";
+            /**
+             * 首页广告数据key：HOME_ADVERT_DATA
+             */
+            public static final String HOME_ADVERT_DATA = "HOME_ADVERT_DATA";
+            /**
+             * 首页直供网推荐数据key：HOME_RECOMMEND_DATA
+             */
+            public static final String HOME_RECOMMEND_DATA = "HOME_RECOMMEND_DATA";
+            /**
+             * 首页热门专区数据key：HOME_HOTZONE_DATA
+             */
+            public static final String HOME_HOTZONE_DATA = "HOME_HOTZONE_DATA";
+            /**
+             * 搜索关键字字符串key：SEARCHKEY_STRINGS
+             */
+            public static final String SEARCHKEY_STRINGS = "SEARCHKEY_STRINGS";
+            /**
+             * 是否记住密码key：IS_REMEMBER_PWD
+             */
+            public static final String IS_REMEMBER_PWD = "IS_REMEMBER_PWD";
+            /**
+             * 登录名key：LOGIN_NAME
+             */
+            public static final String LOGIN_NAME = "LOGIN_NAME";
+            /**
+             * 密码key：LOGIN_PWD
+             */
+            public static final String LOGIN_PWD = "LOGIN_PWD";
+        }
+    }
+
+    public static final class NetWorkRequest {
+        public static final int PAGE_SIZE = 12;
+        public static final String CATEGORY_URL = "product/Product/0/getProductClass";
+        public static final String PRODUCTLIST_URL = "product/Product/0/searchProductGroupByProModel";
+        public static final String PRODUCT_COLOR_LIST_URL = "product/Product/0/searchProduct";
+        public static final String PRODUCT_DETAIL_URL = "product/Product/0/getProductInfo";
+        public static final String LOGIN_IN_URL = "user/UserLogin/0/login";
+        public static final String LOGIN_OUT_URL = "user/UserLogin/0/exitLogin";
+
+        public static final String USER_INFO_GET_URL = "user/User/0/searchUser";
+        public static final String BaiduLoggedInUser_URL =
+                "https://openapi.baidu.com/rest/2.0/passport/users/getLoggedInUser";
+        public static final String PROVINCE_URL = "sys/AreaDict/0/findAreaInfoBySupperId"; // 请求省份/市/县区
+        public static final String BAIDU_LOGIN_URL = "user/UserLogin/0/baiduLogin";
+        public static final String COMMIT_ADDRESS = "sys/ConsigneeAddress/0/createOrUpdateConsigneeAddress";//地址提交(创建或者修改)
+        public static final String QUERY_ADDRESS = "sys/ConsigneeAddress/0/searchConsigneeAddress";//查询收货地址
+        public static final String DELETE_ADDRESS = "sys/ConsigneeAddress/0/deleteConsigneeAddress";//删除收货地址
+        public static final String QUERY_ORDER_LIST = "order/Order/0/list";
+        public static final String QUERY_ORDER_DETAIL = "order/Order/$id/detail";
+        public static final String JIA_BALANCE_URL = "sys/JiaMoney/0/SearchJiaMoney";
+        public static final String  BOOK_LIST_URL  =   "order/Order/0/list";
+        public static final String SHOPPING_ADD_CART_URL =  "order/ShoppingCart/0/add";
+        public static final String SHOPPING_QUERY_CART_URL =  "order/ShoppingCart/0/listShoppingCarts";
+        public static final String SHOPPING_DELETE_CART_URL =  "order/ShoppingCart/%1$s/delete";
+        public static final String SHOPPING_MODIFY_CART_URL =  "order/ShoppingCart/%1$s/modifyProductNum";
+        public static final String SHOPPING_CART_ORDER_CONFIRM_URL =  "order/ShoppingCart/0/confirm";
+        public static final String SHOPPING_CART_ORDER_SUBMIT_URL =  "order/ShoppingCart/0/order";
+        public static final String ORDER_CANCEL_URL = "order/Order/$id/cancel";
+        public static final String ACTIVITIES_LIST_URL = "sys/Advertising/0/selectAdversiting";
+        public static final String CHANGE_DEFAULT_ADDRESS_URL="sys/ConsigneeAddress/0/setDefaultConsigneeAddress";
+    }
+
+    public static final class AccountFragment {
+        public static final int ORDER_LIST = 2;
+        public static final int BOOK_LIST = 3;
+    }
+
+}
